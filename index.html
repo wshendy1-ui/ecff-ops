@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1b1a17">
+<title>ECFF Theater Ops</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
+<style>
+:root{
+  --bg:#f6f3ee;--panel:#fff;--ink:#1d1b18;--muted:#6f685e;--line:#e3ddd3;--soft:#efe9df;
+  --accent:#b8860b;--accent-ink:#fff;--danger:#b3261e;--warn:#9a6700;--warn-bg:#fff4d6;--ok:#1e7a46;--ok-bg:#e3f4e9;
+  --radius:12px;--shadow:0 1px 2px rgba(0,0,0,.06),0 2px 8px rgba(0,0,0,.05);
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#141311;--panel:#1e1c19;--ink:#f1ece4;--muted:#a59d90;--line:#34302a;--soft:#28251f;
+  --accent:#e0b44c;--accent-ink:#1b1a17;--danger:#f08b84;--warn:#f0c55a;--warn-bg:#3a2f12;--ok:#7dd3a0;--ok-bg:#16301f;
+  --shadow:none;}}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+h1,h2,h3{font-family:Oswald,Inter,sans-serif;font-weight:600;letter-spacing:.01em;margin:0}
+a{color:var(--accent)}
+header.top{position:sticky;top:0;z-index:20;background:#1b1a17;color:#f6efe2;display:flex;align-items:center;gap:12px;padding:10px 16px}
+header.top h1{font-size:19px;text-transform:uppercase;letter-spacing:.06em}
+header.top .sub{font-size:12px;color:#cfc4b0}
+header.top .spacer{flex:1}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:2px 9px;border-radius:99px;font-size:12px;background:var(--soft);color:var(--muted);white-space:nowrap}
+header .pill{background:#2d2a25;color:#e9dcc2}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
+nav.tabs{display:flex;gap:2px;background:#1b1a17;padding:0 10px;overflow-x:auto;position:sticky;top:48px;z-index:19}
+nav.tabs a{color:#cfc4b0;text-decoration:none;padding:9px 12px;font-size:14px;border-bottom:3px solid transparent;white-space:nowrap}
+nav.tabs a.on{color:#fff;border-color:var(--accent)}
+main{max-width:1180px;margin:0 auto;padding:16px 16px 90px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.grow{flex:1}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px}
+.grid{display:grid;gap:12px}
+.g2{grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}
+.g3{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.btn{border:1px solid var(--line);background:var(--panel);border-radius:9px;padding:7px 12px;cursor:pointer;font-weight:500}
+.btn:hover{border-color:var(--muted)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.dan{color:var(--danger)}
+.btn.sm{padding:4px 9px;font-size:13px}
+.btn:disabled{opacity:.5;cursor:default}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:var(--panel)}
+.seg button{border:0;background:none;padding:6px 12px;cursor:pointer;font-size:14px}
+.seg button.on{background:var(--ink);color:var(--bg)}
+input[type=text],input[type=search],input[type=time],input[type=date],input[type=number],input[type=email],input[type=tel],select,textarea{
+  border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:7px 9px;width:100%}
+textarea{min-height:70px;resize:vertical}
+label.f{display:block;font-size:12px;color:var(--muted);font-weight:500;margin-bottom:10px}
+label.f>input,label.f>select,label.f>textarea{margin-top:3px;font-size:15px;color:var(--ink)}
+.muted{color:var(--muted)}.small{font-size:13px}.tiny{font-size:12px}
+.sect{display:flex;align-items:center;gap:10px;margin:22px 0 10px}
+.sect h2{font-size:18px;text-transform:uppercase;letter-spacing:.05em}
+.list{display:flex;flex-direction:column;gap:6px}
+.item{display:flex;gap:12px;align-items:flex-start;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer}
+.item:hover{border-color:var(--muted)}
+.item .time{font-variant-numeric:tabular-nums;font-weight:600;min-width:118px;font-size:14px}
+.item .bar{width:4px;align-self:stretch;border-radius:3px;flex:none}
+.item .title{font-weight:600}
+.badge{font-size:11px;padding:1px 7px;border-radius:99px;background:var(--soft);color:var(--muted);font-weight:600;white-space:nowrap}
+.badge.warn{background:var(--warn-bg);color:var(--warn)}
+.badge.ok{background:var(--ok-bg);color:var(--ok)}
+.badge.dan{background:var(--danger);color:#fff}
+.empty{padding:28px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:var(--radius)}
+/* now board */
+.venue-card h3{font-size:17px}
+.now-ev{margin-top:10px;padding:10px;border-radius:9px;background:var(--soft)}
+.now-ev .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
+.ms{display:flex;flex-direction:column;gap:3px;margin-top:8px}
+.ms div{display:flex;gap:8px;font-size:13px;font-variant-numeric:tabular-nums}
+.ms .done{color:var(--muted);text-decoration:line-through}
+.ms .next{font-weight:700;color:var(--accent)}
+.clock{font-family:Oswald,sans-serif;font-size:34px;line-height:1;font-variant-numeric:tabular-nums}
+/* timeline */
+.tl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:var(--panel)}
+.tl{display:grid;position:relative;min-width:760px}
+.tl-head{position:sticky;top:0;background:var(--panel);border-bottom:1px solid var(--line);padding:8px;font-weight:600;font-size:13px;z-index:2}
+.tl-col{position:relative;border-left:1px solid var(--line)}
+.tl-hr{position:absolute;left:0;right:0;border-top:1px dashed var(--line);font-size:11px;color:var(--muted);padding-left:4px}
+.tl-ev{position:absolute;left:4px;right:4px;border-radius:7px;padding:4px 6px;font-size:12px;overflow:hidden;cursor:pointer;color:#fff;line-height:1.25;border:1px solid rgba(0,0,0,.15)}
+.tl-ev b{display:block;font-size:12.5px}
+.tl-now{position:absolute;left:0;right:0;border-top:2px solid var(--danger);z-index:3}
+/* checklist */
+.chk{display:flex;gap:10px;align-items:flex-start;padding:9px 4px;border-bottom:1px solid var(--line)}
+.chk input{width:20px;height:20px;margin-top:1px;flex:none;accent-color:var(--accent)}
+.chk .t{font-variant-numeric:tabular-nums;font-weight:600;min-width:74px;font-size:13px}
+.chk.done .x{color:var(--muted);text-decoration:line-through}
+.chk.due .t{color:var(--accent)}
+/* modal */
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:flex-start;justify-content:center;z-index:50;padding:40px 12px;overflow-y:auto}
+#modal.on{display:flex}
+#modal .box{background:var(--panel);border-radius:14px;max-width:640px;width:100%;padding:18px;box-shadow:0 10px 40px rgba(0,0,0,.3)}
+#modal .box.wide{max-width:960px}
+#modal h2{font-size:20px;margin-bottom:12px}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+.fgrid .full{grid-column:1/-1}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:9px;font-size:14px;z-index:60;display:none;max-width:90vw}
+table.t{border-collapse:collapse;width:100%;font-size:13px}
+table.t th,table.t td{border-bottom:1px solid var(--line);padding:5px 6px;text-align:left;vertical-align:top}
+table.t th{color:var(--muted);font-weight:600}
+.scroll{overflow:auto;max-height:340px;border:1px solid var(--line);border-radius:8px}
+pre.copy{white-space:pre-wrap;background:var(--soft);padding:10px;border-radius:8px;font-size:13px;max-height:300px;overflow:auto}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--panel);border-radius:99px;padding:3px 10px;font-size:13px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.loading{padding:60px;text-align:center;color:var(--muted)}
+@media (max-width:640px){.fgrid{grid-template-columns:1fr}.item .time{min-width:92px;font-size:13px}main{padding:12px 10px 90px}}
+
+/* ===== phone layout ===== */
+body.phone{-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}
+body.phone header.top{padding:calc(8px + env(safe-area-inset-top)) calc(14px + env(safe-area-inset-right)) 8px calc(14px + env(safe-area-inset-left))}
+body.phone header.top h1{font-size:16px}
+body.phone nav.tabs{display:none}
+body.phone main{padding:12px calc(12px + env(safe-area-inset-right)) calc(96px + env(safe-area-inset-bottom)) calc(12px + env(safe-area-inset-left))}
+nav.bottom{display:none}
+body.phone nav.bottom{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--panel);border-top:1px solid var(--line);padding:4px 4px calc(4px + env(safe-area-inset-bottom))}
+nav.bottom a{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;color:var(--muted);text-decoration:none;font-size:11px;font-weight:600;border-radius:10px}
+nav.bottom a svg{width:24px;height:24px}
+nav.bottom a.on{color:var(--accent)}
+body.phone #modal{align-items:flex-end;padding:0}
+body.phone #modal .box{border-radius:18px 18px 0 0;max-height:88vh;overflow-y:auto;padding:10px 16px calc(18px + env(safe-area-inset-bottom));max-width:none}
+body.phone #modal .box::before{content:"";display:block;width:40px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 12px}
+body.phone .btn{padding:10px 14px;border-radius:11px}
+body.phone .btn.sm{padding:7px 11px}
+body.phone input,body.phone select,body.phone textarea{font-size:16px!important}
+body.phone #toast{bottom:auto;top:calc(62px + env(safe-area-inset-top))}
+body.phone .item .time{min-width:84px}
+.hscroll{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin:0 -12px;padding-left:12px;padding-right:12px;scrollbar-width:none}
+.hscroll::-webkit-scrollbar{display:none}
+.hscroll .chip{padding:7px 13px;font-size:14px;flex:none}
+.p-hero{background:#1b1a17;color:#f6efe2;border-radius:18px;padding:16px;margin-top:10px}
+.p-hero .lbl{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#cfc4b0;font-weight:600}
+.p-hero .ttl{font-family:Oswald,sans-serif;font-size:24px;line-height:1.15;margin:4px 0 2px}
+.p-hero .big{font-family:Oswald,sans-serif;font-size:44px;line-height:1;color:var(--accent);font-variant-numeric:tabular-nums}
+.p-hero .sub{font-size:13px;color:#cfc4b0}
+.p-prog{height:6px;border-radius:3px;background:#3a362f;overflow:hidden;margin-top:10px}
+.p-prog i{display:block;height:100%;background:var(--accent)}
+.p-ms{margin-top:12px;display:flex;flex-direction:column;gap:6px}
+.p-ms div{display:flex;gap:10px;font-size:14px;font-variant-numeric:tabular-nums;color:#e9dcc2}
+.p-ms div span:first-child{min-width:64px;font-weight:600}
+.p-ms .done{opacity:.45;text-decoration:line-through}
+.p-ms .next{color:var(--accent);font-weight:700}
+.p-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.p-act{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 4px;border-radius:14px;background:var(--panel);border:1px solid var(--line);font-size:12px;font-weight:600;color:var(--ink);text-decoration:none;cursor:pointer;text-align:center}
+.p-act svg{width:24px;height:24px;color:var(--accent)}
+.p-act b{font-family:Oswald,sans-serif;font-size:22px;line-height:1;color:var(--accent)}
+.p-h{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:18px 2px 8px}
+.p-row{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:6px}
+.p-row .grow{min-width:0}
+.p-row .nm{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.p-row .meta{font-size:13px;color:var(--muted)}
+.p-call{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--soft);color:var(--accent);flex:none;text-decoration:none}
+.p-call svg{width:20px;height:20px}
+.p-chk{display:flex;gap:12px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:13px 12px;margin-bottom:6px;cursor:pointer}
+.p-chk input{width:26px;height:26px;flex:none;accent-color:var(--accent)}
+.p-chk .t{font-weight:700;font-size:13px;min-width:58px;font-variant-numeric:tabular-nums}
+.p-chk.done{opacity:.55}.p-chk.done .x{text-decoration:line-through}
+.p-chk.due{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.p-sticky{position:sticky;top:calc(52px + env(safe-area-inset-top));z-index:5;background:var(--bg);padding:8px 0}
+.p-menu a,.p-menu button{display:flex;align-items:center;gap:12px;width:100%;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:6px;color:var(--ink);text-decoration:none;font-weight:600;text-align:left;cursor:pointer}
+.p-menu svg{width:22px;height:22px;color:var(--accent)}
+.p-menu .chev{margin-left:auto;color:var(--muted)}
+body.phone .grid[style*="minmax(0,2fr)"]{grid-template-columns:1fr!important}
+@media print{header.top,nav.tabs,.noprint{display:none!important}main{padding:0}.card,.item{box-shadow:none;break-inside:avoid}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div><h1>ECFF Theater Ops</h1><div class="sub" id="festName">Eagle Cap Film Festival</div></div>
+  <div class="spacer"></div>
+  <span class="pill" id="modePill"><span class="dot" style="background:#888"></span>Starting…</span>
+</header>
+<nav class="tabs" id="tabs"></nav>
+<nav class="bottom" id="btabs"></nav>
+<main id="app"><div class="loading">Loading festival data…</div></main>
+<div id="modal"><div class="box" id="mbox"></div></div>
+<div id="toast"></div>
+
+<script>
+"use strict";
+/* ============ helpers ============ */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const uid=p=>(p||"x")+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const clone=o=>JSON.parse(JSON.stringify(o));
+const toMin=t=>{if(!t)return null;const m=/^(\d{1,2}):(\d{2})/.exec(t);return m?(+m[1])*60+(+m[2]):null};
+const fromMin=m=>{m=((m%1440)+1440)%1440;return String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart(2,"0")};
+const fmt12=t=>{const m=typeof t==="number"?t:toMin(t);if(m==null)return"";let h=Math.floor(((m%1440)+1440)%1440/60),mm=((m%60)+60)%60;const ap=h>=12?"pm":"am";h=h%12||12;return h+(mm?":"+String(mm).padStart(2,"0"):"")+" "+ap};
+const fmtRange=(a,b)=>fmt12(a)+(b?" – "+fmt12(b):"");
+const DOW=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const dParse=d=>{const [y,m,dd]=d.split("-").map(Number);return new Date(y,m-1,dd)};
+const dStr=dt=>dt.getFullYear()+"-"+String(dt.getMonth()+1).padStart(2,"0")+"-"+String(dt.getDate()).padStart(2,"0");
+const dayLabel=(d,long)=>{if(!d)return"";const x=dParse(d);return (long?["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][x.getDay()]:DOW[x.getDay()])+", "+MON[x.getMonth()]+" "+x.getDate()};
+const addDays=(d,n)=>{const x=dParse(d);x.setDate(x.getDate()+n);return dStr(x)};
+const ls={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+function toast(msg,ms=2600){const t=$("#toast");t.textContent=msg;t.style.display="block";clearTimeout(toast._t);toast._t=setTimeout(()=>t.style.display="none",ms)}
+const byTime=(a,b)=>(a.day||"").localeCompare(b.day||"")||(toMin(a.start)??0)-(toMin(b.start)??0)||(a.title||"").localeCompare(b.title||"");
+const norm=s=>String(s||"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
+
+/* ============ store (shared db when available, else this device) ============ */
+const COLS=["events","venues","volunteers","shifts","roles","runsheets","meta"];
+const Store={
+  mode:"starting",db:null,S:{},readonly:false,stale:false,
+  async init(){
+    COLS.forEach(c=>this.S[c]={});
+    let db=null;
+    if(!window.claude&&window.parent!==window)await new Promise(r=>{let n=0;const iv=setInterval(()=>{if(window.claude||++n>20){clearInterval(iv);r()}},100)});
+    if(window.claude&&typeof window.claude.use==="function"){
+      try{db=await Promise.race([window.claude.use("db"),new Promise(r=>setTimeout(()=>r(null),10000))])}catch(e){db=null}
+      try{window.claude.use("downloads").then(d=>{Store.downloads=d||null}).catch(()=>{})}catch(e){}
+    }
+    if(db){this.mode="shared";this.db=db;this.subscribe()}
+    else{this.mode="local";const saved=ls.get("ecff-ops-data",null);if(saved)COLS.forEach(c=>this.S[c]=saved[c]||{});this.loaded=true;
+      if(!saved)this.autoSeedLocal();}
+    setModePill();
+  },
+  async autoSeedLocal(){try{const r=await fetch("seed.json");if(r.ok){await importBundle(await r.json(),false);toast("Loaded the 2026 festival as a starting point")}}catch(e){}},
+  subscribe(){
+    const pending=new Set(COLS);
+    const timer=setTimeout(()=>{if(pending.size){this.stale=true;setModePill();render()}},10000);
+    COLS.forEach(c=>{
+      this.db.collection(c).onSnapshot(snap=>{
+        const o={};snap.docs.forEach(d=>{o[d.id]=Object.assign({},d.data(),{id:d.id})});this.S[c]=o;
+        if(!snap.metadata.fromCache){pending.delete(c);if(!pending.size){clearTimeout(timer);this.stale=false;setModePill()}}
+        this.loaded=true;scheduleRender();
+      },err=>{pending.delete(c);this.loaded=true;console.warn("db",c,err);if(err&&err.code==="revoked"){this.readonly=true;setModePill()}scheduleRender()});
+    });
+  },
+  saveLocal(){if(this.mode==="local")ls.set("ecff-ops-data",this.S)},
+  async put(col,obj){
+    const id=obj.id||uid(col[0]);const body=clone(obj);delete body.id;
+    if(this.mode==="shared"){
+      this.S[col][id]=Object.assign({},body,{id});scheduleRender();
+      try{await this.db.collection(col).doc(id).set(body)}catch(e){this.writeErr(e);throw e}
+    }else{this.S[col][id]=Object.assign({},body,{id});this.saveLocal();scheduleRender()}
+    return id;
+  },
+  async del(col,id){
+    if(this.mode==="shared"){delete this.S[col][id];scheduleRender();try{await this.db.collection(col).doc(id).delete()}catch(e){this.writeErr(e);throw e}}
+    else{delete this.S[col][id];this.saveLocal();scheduleRender()}
+  },
+  async bulk(ops,progress){ // ops: [{col,obj}|{col,del:id}]
+    let done=0;const N=ops.length;
+    if(this.mode!=="shared"){ops.forEach(o=>{if(o.del)delete this.S[o.col][o.del];else{const id=o.obj.id||uid(o.col[0]);const b=clone(o.obj);delete b.id;this.S[o.col][id]=Object.assign(b,{id})}});this.saveLocal();scheduleRender();return}
+    const q=ops.slice();const worker=async()=>{while(q.length){const o=q.shift();
+      try{if(o.del)await this.db.collection(o.col).doc(o.del).delete();else{const id=o.obj.id||uid(o.col[0]);const b=clone(o.obj);delete b.id;await this.db.collection(o.col).doc(id).set(b)}}
+      catch(e){if(e&&e.code==="unavailable"){await new Promise(r=>setTimeout(r,400+Math.random()*600));q.push(o);continue}if(e&&e.code==="resource_exhausted"){await new Promise(r=>setTimeout(r,1500));q.push(o);continue}this.writeErr(e);throw e}
+      done++;progress&&progress(done,N)}};
+    await Promise.all([worker(),worker(),worker()]);
+  },
+  writeErr(e){const c=e&&e.code;if(c==="invalid_argument"){this.readonly=true;setModePill();toast("You have view-only access — changes weren't saved")}
+    else if(c==="quota_exceeded")toast("Storage is full: "+(e.message||"delete some records"));else toast("Couldn't save: "+(e&&e.message||c||"unknown error"))},
+  arr(col){return Object.values(this.S[col]||{})},
+  get(col,id){return (this.S[col]||{})[id]},
+};
+function setModePill(){
+  const p=$("#modePill");if(!p)return;
+  let col="#888",txt="Starting…";
+  if(Store.mode==="shared"){col=Store.stale?"#e0b44c":"#4cc38a";txt=Store.stale?"Shared · may be out of date":"Shared · live"}
+  if(Store.mode==="local"){col="#7aa7e0";txt="Saved on this device"}
+  if(Store.readonly)txt+=" · view only";
+  p.innerHTML=`<span class="dot" style="background:${col}"></span>${esc(txt)}`;
+}
+
+/* ============ derived ============ */
+const F=()=>Object.assign({name:"Eagle Cap Film Festival",year:new Date().getFullYear(),days:[],contacts:[]},(Store.get("meta","festival")||{}));
+const festDays=()=>{const f=F();if(f.days&&f.days.length)return f.days.slice().sort();const s=new Set(Store.arr("events").map(e=>e.day).filter(Boolean));return [...s].sort()};
+const allDays=()=>{const s=new Set([...festDays(),...Store.arr("events").map(e=>e.day).filter(Boolean)]);return [...s].sort()};
+const venues=()=>Store.arr("venues").sort((a,b)=>(a.order??99)-(b.order??99)||a.name.localeCompare(b.name));
+const venueName=id=>(Store.get("venues",id)||{}).name||id||"—";
+const venueColor=id=>(Store.get("venues",id)||{}).color||"#888";
+const roles=()=>Store.arr("roles").sort((a,b)=>(a.group||"").localeCompare(b.group||"")||a.name.localeCompare(b.name));
+const roleByName=n=>Store.arr("roles").find(r=>norm(r.name)===norm(n));
+const vols=()=>Store.arr("volunteers").sort((a,b)=>a.name.localeCompare(b.name));
+const volName=id=>(Store.get("volunteers",id)||{}).name||"(unassigned)";
+const events=()=>Store.arr("events").sort(byTime);
+const shifts=()=>Store.arr("shifts").sort(byTime);
+const runTpl=()=>((Store.get("meta","runsheet")||{}).items)||[];
+function shiftTimes(s){ // derive from event + role arrival if missing
+  let st=s.start,en=s.end,day=s.day;const ev=s.eventId&&Store.get("events",s.eventId);
+  if(ev){day=day||ev.day;if(!st){const r=roleByName(s.role);st=fromMin(toMin(ev.start)-(r?+r.arriveMin||0:0))}if(!en)en=ev.end}
+  return {day,start:st,end:en};
+}
+function eventConflicts(){
+  const out={};const byV={};events().forEach(e=>{(byV[e.venueId+"|"+e.day]=byV[e.venueId+"|"+e.day]||[]).push(e)});
+  Object.values(byV).forEach(list=>{list.sort(byTime);for(let i=0;i<list.length-1;i++){const a=list[i],b=list[i+1];const gap=toMin(b.start)-toMin(a.end);
+    if(a.type==="office"||b.type==="office"||a.type==="lounge"||b.type==="lounge")continue;
+    if(gap<0){(out[a.id]=out[a.id]||[]).push("Overlaps "+b.title);(out[b.id]=out[b.id]||[]).push("Overlaps "+a.title)}
+    else if(gap<45&&(b.type==="screening"||b.type==="music")){(out[b.id]=out[b.id]||[]).push(`Tight turnover: ${gap} min after ${a.title}`)}}});
+  return out;
+}
+function shiftConflicts(){
+  const out={};const byP={};shifts().forEach(s=>{if(!s.volunteerId)return;const t=shiftTimes(s);(byP[s.volunteerId+"|"+t.day]=byP[s.volunteerId+"|"+t.day]||[]).push(Object.assign({},s,t))});
+  Object.values(byP).forEach(l=>{l.sort(byTime);for(let i=0;i<l.length-1;i++){if(toMin(l[i+1].start)<toMin(l[i].end)){out[l[i].id]=out[l[i+1].id]="Double-booked"}}});
+  return out;
+}
+function nowCtx(){const ov=ls.get("ecff-clock",null);if(ov&&ov.on)return{day:ov.day,min:toMin(ov.time),sim:true};const d=new Date();return{day:dStr(d),min:d.getHours()*60+d.getMinutes(),sim:false}}
+
+/* ============ routing / render ============ */
+const TABS=[["now","Now"],["schedule","Schedule"],["shifts","Shifts"],["people","Volunteers"],["run","Run sheet"],["venues","Venues & roles"],["data","Import / data"]];
+let rq=false;function scheduleRender(){if(rq)return;rq=true;requestAnimationFrame(()=>{rq=false;render()})}
+const PTABS=[["now","Now","M12 6v6l4 2M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z"],["schedule","Schedule","M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"],["run","Run sheet","M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"],["crew","Crew","M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"],["more","More","M4 6h16M4 12h16M4 18h16"]];
+const isPhone=()=>{const u=ls.get("ecff-ui","auto");return u==="phone"||(u==="auto"&&matchMedia("(max-width: 720px)").matches)};
+const ico=(d,w=24)=>`<svg viewBox="0 0 24 24" width="${w}" height="${w}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>`;
+const IC={phone:"M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z",msg:"M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z",list:"M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11",clock:"M12 6v6l4 2M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z",users:"M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z",pin:"M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0zM12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6z",file:"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M12 18v-6M9 15l3 3 3-3",cal:"M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z",mon:"M2 3h20v14H2zM8 21h8M12 17v4",tix:"M2 9a3 3 0 0 0 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 0 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"};
+const view=()=>{const h=location.hash.replace("#","");return (TABS.some(t=>t[0]===h)||(isPhone()&&PTABS.some(t=>t[0]===h)))?h:"now"};
+function render(){
+  const ph=isPhone();document.body.classList.toggle("phone",ph);
+  $("#tabs").innerHTML=TABS.map(([k,l])=>`<a href="#${k}" class="${view()===k?"on":""}">${l}</a>`).join("");
+  const cur=view(),parent=["shifts","people","venues","data"].includes(cur)?"more":cur;
+  $("#btabs").innerHTML=PTABS.map(([k,l,d])=>`<a href="#${k}" class="${parent===k?"on":""}">${ico(d)}${l}</a>`).join("");
+  $("#festName").textContent=F().name+" "+(F().year||"");
+  if(!Store.loaded){$("#app").innerHTML=`<div class="loading">Loading festival data…${Store.stale?"<br><br>The shared data can’t be reached yet.":""}</div>`;return}
+  const ae=document.activeElement;const keep=ae&&ae.id&&$("#app").contains(ae)?{id:ae.id,s:ae.selectionStart,e:ae.selectionEnd}:null;
+  const html=(ph&&["shifts","people","venues","data"].includes(view())?`<a href="#more" class="small" style="text-decoration:none;display:inline-block;margin-bottom:10px">‹ More</a>`:"")+(ph?{now:pNow,schedule:pSchedule,run:pRun,crew:pCrew,more:pMore,shifts:vShifts,people:vPeople,venues:vVenues,data:vData}:{now:vNow,schedule:vSchedule,shifts:vShifts,people:vPeople,run:vRun,venues:vVenues,data:vData,crew:vPeople,more:vData})[view()]();
+  $("#app").innerHTML=(Store.loaded&&!Store.arr("events").length&&view()!=="data"?emptyBanner():"")+html;
+  if(keep){const el=document.getElementById(keep.id);if(el){el.focus();try{el.setSelectionRange(keep.s,keep.e)}catch(e){}}}
+}
+function emptyBanner(){return `<div class="card" style="margin-bottom:14px;border-color:var(--accent)"><div class="row"><div class="grow"><b>No schedule yet.</b> <span class="muted">Start from the 2026 festival (all screenings, venues, volunteer roles and the theater-manager run sheet), then edit it for next year.</span></div><button class="btn pri" data-act="seed">Load 2026 festival</button></div></div>`}
+addEventListener("hashchange",()=>{render();scrollTo(0,0)});
+matchMedia("(max-width: 720px)").addEventListener("change",()=>render());
+
+/* ---------- NOW ---------- */
+function vNow(){
+  const nc=nowCtx();const days=festDays();const ov=ls.get("ecff-clock",{on:false,day:days[0]||dStr(new Date()),time:"13:45"});
+  const myV=ls.get("ecff-myvenues",[]);
+  const vs=venues().filter(v=>!myV.length||myV.includes(v.id));
+  const evs=events().filter(e=>e.day===nc.day);
+  const onDay=days.includes(nc.day)||evs.length;
+  let out=`<div class="row" style="align-items:flex-end;margin-bottom:12px">
+   <div><div class="clock">${fmt12(nc.min)}</div><div class="muted small">${dayLabel(nc.day,true)}${nc.sim?' · <b style="color:var(--warn)">practice clock</b>':""}</div></div>
+   <div class="grow"></div>
+   <div class="card noprint" style="padding:8px 10px"><div class="row small">
+     <label class="row" style="gap:6px"><input type="checkbox" id="clkOn" ${ov.on?"checked":""}> Practice clock</label>
+     <select id="clkDay" style="width:auto">${allDays().map(d=>`<option value="${d}" ${d===ov.day?"selected":""}>${dayLabel(d)}</option>`).join("")}</select>
+     <input type="time" id="clkTime" value="${esc(ov.time)}" style="width:auto">
+   </div></div></div>
+   <div class="chips noprint" style="margin-bottom:12px"><span class="muted small">My venues:</span>${venues().map(v=>`<span class="chip ${myV.includes(v.id)?"on":""}" data-act="myv" data-id="${v.id}"><span class="dot" style="background:${v.color}"></span>${esc(v.name)}</span>`).join("")}</div>`;
+  if(!onDay){const nxt=days.find(d=>d>nc.day);out+=`<div class="empty">No events today. ${nxt?`Next festival day: <b>${dayLabel(nxt,true)}</b>.`:""}<br>Turn on the <b>practice clock</b> to walk through a festival day.</div>`;return out}
+  const sh=shifts().map(s=>Object.assign({},s,shiftTimes(s)));
+  out+=`<div class="grid g2">`+vs.map(v=>{
+    const list=evs.filter(e=>e.venueId===v.id);
+    const cur=list.filter(e=>toMin(e.start)<=nc.min&&toMin(e.end)>nc.min);
+    const nxt=list.find(e=>toMin(e.start)>nc.min);
+    const onShift=sh.filter(s=>s.day===nc.day&&s.venueId===v.id&&toMin(s.start)<=nc.min&&toMin(s.end)>nc.min);
+    const comingIn=sh.filter(s=>s.day===nc.day&&s.venueId===v.id&&toMin(s.start)>nc.min&&toMin(s.start)-nc.min<=60);
+    let body="";
+    cur.forEach(e=>{const left=toMin(e.end)-nc.min;body+=`<div class="now-ev" data-act="ev" data-id="${e.id}" style="cursor:pointer"><div class="lbl">Now · ${left} min left</div><b>${esc(e.title)}</b><div class="small muted">${fmtRange(e.start,e.end)}${e.qa?" · Q&A after":""}</div></div>`});
+    if(nxt){const until=toMin(nxt.start)-nc.min;const st=toMin(nxt.start);
+      const ms=(nxt.type==="screening"||nxt.type==="music")?[[-60,"Theater manager on site"],[-45,"Scanners, projectionist, box office on site"],[-30,"Line forms"],[-20,"Scanning begins"],[-10,"Rush line released — get count from box office"],[0,"Showtime"]]:[[0,"Starts"]];
+      const nextIdx=ms.findIndex(m=>st+m[0]>nc.min);
+      body+=`<div class="now-ev" data-act="ev" data-id="${nxt.id}" style="cursor:pointer"><div class="lbl">Next · in ${until>=60?Math.floor(until/60)+" h "+(until%60)+" min":until+" min"}</div><b>${esc(nxt.title)}</b><div class="small muted">${fmtRange(nxt.start,nxt.end)}${nxt.qa?" · Q&A after":""}${nxt.notes?" · "+esc(nxt.notes):""}</div>
+        <div class="ms">${ms.map((m,i)=>`<div class="${st+m[0]<=nc.min?"done":i===nextIdx?"next":""}"><span style="min-width:62px">${fmt12(st+m[0])}</span><span>${m[1]}</span></div>`).join("")}</div>
+        ${nxt.type==="screening"?`<div style="margin-top:8px"><a href="#run" data-act="openrun" data-id="${nxt.id}" class="btn sm">Open run sheet</a></div>`:""}</div>`}
+    if(!cur.length&&!nxt)body+=`<div class="muted small" style="margin-top:8px">Nothing else here today.</div>`;
+    body+=`<div class="small" style="margin-top:10px"><b>On shift (${onShift.length})</b>${onShift.length?": "+onShift.map(s=>esc(volName(s.volunteerId))+` <span class="muted">${esc(s.role||"")}</span>`).join(", "):""}</div>`;
+    if(comingIn.length)body+=`<div class="small muted">Arriving within the hour: ${comingIn.map(s=>esc(volName(s.volunteerId))+" "+fmt12(s.start)).join(", ")}</div>`;
+    return `<div class="card venue-card"><div class="row"><span class="dot" style="background:${v.color};width:12px;height:12px"></span><h3>${esc(v.name)}</h3></div>${body}</div>`;
+  }).join("")+`</div>`;
+  return out;
+}
+setInterval(()=>{if(view()==="now"&&!$("#modal").classList.contains("on")&&!(document.activeElement&&$("#app").contains(document.activeElement)))render()},30000);
+
+/* ---------- SCHEDULE ---------- */
+function vSchedule(){
+  const days=allDays();let day=ls.get("ecff-sday",null);if(day!=="__all"&&!days.includes(day)){const n=nowCtx().day;day=days.includes(n)?n:(festDays().find(d=>d>=n)||festDays()[0]||days[0])}
+  const mode=ls.get("ecff-smode","list");const vf=ls.get("ecff-svf",[]);
+  const conf=eventConflicts();const shc={};shifts().forEach(s=>{if(s.eventId)shc[s.eventId]=(shc[s.eventId]||0)+1});
+  let out=`<div class="row noprint"><div class="seg">${days.map(d=>`<button data-act="sday" data-d="${d}" class="${d===day?"on":""}">${dayLabel(d)}</button>`).join("")}<button data-act="sday" data-d="__all" class="${day==="__all"?"on":""}">All</button></div>
+    <div class="seg"><button data-act="smode" data-m="list" class="${mode==="list"?"on":""}">List</button><button data-act="smode" data-m="tl" class="${mode==="tl"?"on":""}">Timeline</button></div>
+    <div class="grow"></div><button class="btn" onclick="print()">Print</button><button class="btn pri" data-act="newev" data-d="${day==="__all"?"":day}">+ Event</button></div>
+    <div class="chips noprint" style="margin:10px 0">${venues().map(v=>`<span class="chip ${vf.includes(v.id)?"on":""}" data-act="svf" data-id="${v.id}"><span class="dot" style="background:${v.color}"></span>${esc(v.name)}</span>`).join("")}</div>`;
+  let list=events().filter(e=>(day==="__all"||e.day===day)&&(!vf.length||vf.includes(e.venueId)));
+  if(!list.length)return out+`<div class="empty">No events${day!=="__all"?" on "+dayLabel(day):""}.</div>`;
+  if(mode==="tl"&&day!=="__all")return out+timeline(list,day);
+  let cur="";out+=`<div class="list">`;
+  list.forEach(e=>{if(e.day!==cur){cur=e.day;if(day==="__all")out+=`<h3 style="margin:14px 0 4px">${dayLabel(cur,true)}</h3>`}
+    out+=`<div class="item" data-act="ev" data-id="${e.id}"><div class="bar" style="background:${venueColor(e.venueId)}"></div><div class="time">${fmtRange(e.start,e.end)}</div>
+      <div class="grow"><div class="title">${esc(e.title)}</div><div class="small muted">${esc(venueName(e.venueId))}${e.notes?" · "+esc(e.notes):""}</div></div>
+      <div class="row" style="gap:4px;justify-content:flex-end">${e.qa?'<span class="badge">Q&A</span>':""}${shc[e.id]?`<span class="badge ok">${shc[e.id]} staff</span>`:""}${(conf[e.id]||[]).map(c=>`<span class="badge warn" title="${esc(c)}">${esc(c.startsWith("Tight")?"Tight turnover":"Overlap")}</span>`).join("")}</div></div>`});
+  return out+`</div>`;
+}
+function timeline(list,day){
+  const vs=venues().filter(v=>list.some(e=>e.venueId===v.id));
+  const lo=Math.floor(Math.min(...list.map(e=>toMin(e.start)))/60)*60,hi=Math.ceil(Math.max(...list.map(e=>toMin(e.end)||toMin(e.start)+60))/60)*60;
+  const PX=1.1,H=(hi-lo)*PX;const nc=nowCtx();
+  let cols=`<div class="tl-col" style="border:0;height:${H}px;width:56px">${Array.from({length:(hi-lo)/60+1},(_,i)=>`<div class="tl-hr" style="top:${i*60*PX}px;border:0">${fmt12(lo+i*60)}</div>`).join("")}</div>`;
+  vs.forEach(v=>{cols+=`<div class="tl-col" style="height:${H}px">${Array.from({length:(hi-lo)/60},(_,i)=>`<div class="tl-hr" style="top:${i*60*PX}px"></div>`).join("")}
+    ${(()=>{const ve=list.filter(e=>e.venueId===v.id).sort((x,y)=>toMin(x.start)-toMin(y.start)||(toMin(y.end)-toMin(x.end)));const lanes=[];
+      ve.forEach(e=>{const en=toMin(e.end)||toMin(e.start)+60;let L=lanes.findIndex(l=>l<=toMin(e.start));if(L<0){L=lanes.length;lanes.push(0)}lanes[L]=en;e._lane=L});
+      const n=Math.max(1,lanes.length);return ve.map(e=>{const t=(toMin(e.start)-lo)*PX,h=Math.max(22,((toMin(e.end)||toMin(e.start)+60)-toMin(e.start))*PX-2);
+      return `<div class="tl-ev" data-act="ev" data-id="${e.id}" style="top:${t}px;height:${h}px;background:${v.color};left:calc(${e._lane*100/n}% + 3px);right:auto;width:calc(${100/n}% - 6px)"><b>${esc(e.title)}</b>${fmtRange(e.start,e.end)}</div>`}).join("")})()}
+    ${nc.day===day&&nc.min>=lo&&nc.min<=hi?`<div class="tl-now" style="top:${(nc.min-lo)*PX}px"></div>`:""}</div>`});
+  return `<div class="tl-wrap"><div class="tl" style="grid-template-columns:56px repeat(${vs.length},minmax(150px,1fr))"><div class="tl-head"></div>${vs.map(v=>`<div class="tl-head">${esc(v.name)}</div>`).join("")}${cols}</div></div>`;
+}
+
+/* ---------- SHIFTS ---------- */
+function vShifts(){
+  const f=ls.get("ecff-shf",{day:"",venue:"",vol:"",role:""});const sc=shiftConflicts();
+  let list=shifts().map(s=>Object.assign({},s,shiftTimes(s))).sort(byTime).filter(s=>(!f.day||s.day===f.day)&&(!f.venue||s.venueId===f.venue)&&(!f.vol||s.volunteerId===f.vol)&&(!f.role||norm(s.role)===norm(f.role)));
+  const sel=(k,opts,ph)=>`<select data-act="shf" data-k="${k}" style="width:auto;min-width:130px"><option value="">${ph}</option>${opts.map(([v,l])=>`<option value="${esc(v)}" ${f[k]===v?"selected":""}>${esc(l)}</option>`).join("")}</select>`;
+  let out=`<div class="row noprint">${sel("day",allDays().map(d=>[d,dayLabel(d)]),"All days")}${sel("venue",venues().map(v=>[v.id,v.name]),"All venues")}${sel("vol",vols().map(v=>[v.id,v.name]),"All volunteers")}${sel("role",roles().map(r=>[r.name,r.name]),"All roles")}
+    <div class="grow"></div><button class="btn" onclick="print()">Print</button><button class="btn pri" data-act="newshift">+ Shift</button></div>
+    <p class="small muted">${list.length} shift${list.length===1?"":"s"}${Object.keys(sc).length?` · <span style="color:var(--warn)">${Object.keys(sc).length} double-booked</span>`:""}. Shifts tied to an event get their arrival time from the role (e.g. Theater Manager = 60 min early).</p>`;
+  if(!list.length)return out+`<div class="empty">No shifts yet. Add one, or import your volunteer spreadsheet from <a href="#data">Import / data</a>.</div>`;
+  let cur="";out+=`<div class="list">`;
+  list.forEach(s=>{if(s.day!==cur){cur=s.day;out+=`<h3 style="margin:14px 0 4px">${dayLabel(cur,true)||"No date"}</h3>`}
+    const ev=s.eventId&&Store.get("events",s.eventId);
+    out+=`<div class="item" data-act="shift" data-id="${s.id}"><div class="bar" style="background:${venueColor(s.venueId)}"></div><div class="time">${fmtRange(s.start,s.end)}</div>
+      <div class="grow"><div class="title">${esc(volName(s.volunteerId))} <span class="muted" style="font-weight:500">· ${esc(s.role||"")}</span></div><div class="small muted">${esc(venueName(s.venueId))}${ev?" · "+esc(ev.title):""}${s.notes?" · "+esc(s.notes):""}</div></div>
+      ${sc[s.id]?'<span class="badge warn">Double-booked</span>':""}${!s.volunteerId?'<span class="badge dan">Open</span>':""}</div>`});
+  return out+`</div>`;
+}
+
+/* ---------- PEOPLE ---------- */
+function vPeople(){
+  const q=ls.get("ecff-pq","");const cnt={};shifts().forEach(s=>{if(s.volunteerId)cnt[s.volunteerId]=(cnt[s.volunteerId]||0)+1});
+  const list=vols().filter(v=>!q||norm([v.name,v.email,v.phone,(v.roles||[]).join(" ")].join(" ")).includes(norm(q)));
+  let out=`<div class="row noprint"><input type="search" id="pq" placeholder="Search name, role, phone…" value="${esc(q)}" style="max-width:320px"><div class="grow"></div>
+    <a class="btn" href="#data">Import Excel</a><button class="btn pri" data-act="newvol">+ Volunteer</button></div><p class="small muted">${vols().length} volunteers</p>`;
+  if(!list.length)return out+`<div class="empty">${vols().length?"No matches.":"No volunteers yet. Import your master list (Excel or CSV) or add people one at a time."}</div>`;
+  out+=`<div class="grid g3">`+list.map(v=>`<div class="card" data-act="vol" data-id="${v.id}" style="cursor:pointer"><div class="row"><b class="grow">${esc(v.name)}</b><span class="badge ${cnt[v.id]?"ok":""}">${cnt[v.id]||0} shifts</span></div>
+     <div class="small muted">${esc(v.phone||"")}${v.phone&&v.email?" · ":""}${esc(v.email||"")}</div>${(v.roles||[]).length?`<div class="chips" style="margin-top:6px">${v.roles.map(r=>`<span class="badge">${esc(r)}</span>`).join("")}</div>`:""}</div>`).join("")+`</div>`;
+  return out;
+}
+
+/* ---------- RUN SHEET ---------- */
+function vRun(){
+  const screenings=events().filter(e=>e.type==="screening"||e.type==="music"||e.type==="talk");
+  let id=ls.get("ecff-runev",null);
+  if(!Store.get("events",id)){const nc=nowCtx();const myV=ls.get("ecff-myvenues",[]);id=(screenings.find(e=>(e.day>nc.day||(e.day===nc.day&&toMin(e.end)>nc.min))&&(!myV.length||myV.includes(e.venueId)))||screenings[0]||{}).id}
+  const ev=Store.get("events",id);
+  let out=`<div class="row noprint"><select data-act="runev" style="max-width:520px">${screenings.map(e=>`<option value="${e.id}" ${e.id===id?"selected":""}>${dayLabel(e.day)} · ${fmt12(e.start)} · ${esc(e.title)} (${esc(venueName(e.venueId))})</option>`).join("")}</select>
+    <div class="grow"></div><button class="btn" data-act="edittpl">Edit checklist template</button><button class="btn" onclick="print()">Print</button></div>`;
+  if(!ev)return out+`<div class="empty">No events yet.</div>`;
+  const rs=Store.get("runsheets",ev.id)||{checked:{},rush:"",notes:""};const st=toMin(ev.start),en=toMin(ev.end);const nc=nowCtx();
+  const items=runTpl().map(it=>Object.assign({},it,{at:it.offset==null||it.offset===""?null:st+(+it.offset)}));
+  const done=items.filter(i=>rs.checked&&rs.checked[i.key]).length;
+  const crew=shifts().filter(s=>s.eventId===ev.id||(s.venueId===ev.venueId&&shiftTimes(s).day===ev.day&&toMin(shiftTimes(s).start)<=st&&toMin(shiftTimes(s).end)>=st));
+  out+=`<div class="grid" style="grid-template-columns:minmax(0,2fr) minmax(260px,1fr);margin-top:12px">
+   <div class="card"><div class="row"><div class="grow"><h2 style="font-size:22px">${esc(ev.title)}</h2><div class="muted small">${dayLabel(ev.day,true)} · ${fmtRange(ev.start,ev.end)} · ${esc(venueName(ev.venueId))}${ev.qa?" · Q&A after":""}</div></div>
+     <span class="badge ${done===items.length&&items.length?"ok":""}">${done}/${items.length} done</span></div>
+     <div style="margin-top:8px">${items.map(it=>{const c=!!(rs.checked&&rs.checked[it.key]);const due=!c&&it.at!=null&&nc.day===ev.day&&it.at<=nc.min;
+       return `<label class="chk ${c?"done":""} ${due?"due":""}"><input type="checkbox" data-act="chk" data-ev="${ev.id}" data-k="${it.key}" ${c?"checked":""}><span class="t">${it.at==null?"After":fmt12(it.at)}</span><span class="x">${esc(it.text)}${c&&rs.by&&rs.by[it.key]?` <span class="tiny muted">✓ ${esc(rs.by[it.key])}</span>`:""}</span></label>`}).join("")}</div>
+   </div>
+   <div class="grid" style="align-content:start">
+     <div class="card"><label class="f">Rush-line seats to release (from box office)<input type="number" id="rushN" data-ev="${ev.id}" min="0" value="${esc(DRAFT["rush:"+ev.id]??rs.rush)}" placeholder="e.g. 34" style="font-size:24px;font-weight:600"></label>
+       <div class="row"><button class="btn pri sm" data-act="saverun" data-ev="${ev.id}">Save</button><span class="tiny muted">Give this number to the scanners at ${fmt12(st-10)}.</span></div></div>
+     <div class="card"><label class="f">Show notes (attendance, issues, lost & found)<textarea id="runNotes" data-ev="${ev.id}">${esc(DRAFT["notes:"+ev.id]??(rs.notes||""))}</textarea></label><button class="btn sm" data-act="saverun" data-ev="${ev.id}">Save notes</button></div>
+     <div class="card"><b>Crew for this show</b>${crew.length?`<div class="small" style="margin-top:6px">${crew.map(s=>{const t=shiftTimes(s);const v=Store.get("volunteers",s.volunteerId)||{};return `<div style="padding:3px 0">${esc(v.name||"(open)")} <span class="muted">· ${esc(s.role||"")} · in ${fmt12(t.start)}</span>${v.phone?` <span class="muted tiny">${esc(v.phone)}</span>`:""}</div>`}).join("")}</div>`:`<div class="small muted">No shifts tied to this show yet.</div>`}
+       <button class="btn sm noprint" style="margin-top:8px" data-act="newshift" data-ev="${ev.id}">+ Add crew</button></div>
+     <div class="card small"><b>Contacts</b>${F().contacts.map(c=>`<div style="margin-top:4px">${esc(c.name)} <span class="muted">· ${esc(c.role||"")}</span><br>${c.phone?`<a href="tel:${esc(c.phone)}">${esc(c.phone)}</a>`:""} ${c.email?`<span class="muted">${esc(c.email)}</span>`:""}</div>`).join("")||'<div class="muted">Add contacts under Import / data → Festival settings.</div>'}</div>
+   </div></div>`;
+  return out;
+}
+
+/* ---------- VENUES & ROLES ---------- */
+function vVenues(){
+  let out=`<div class="sect"><h2>Venues</h2><div class="grow"></div><button class="btn pri sm" data-act="newvenue">+ Venue</button></div><div class="grid g3">`+
+    venues().map(v=>`<div class="card" data-act="venue" data-id="${v.id}" style="cursor:pointer"><div class="row"><span class="dot" style="background:${v.color};width:12px;height:12px"></span><b>${esc(v.name)}</b></div><div class="small muted" style="margin-top:4px">${esc(v.address||"")}</div>${v.notes?`<div class="small" style="margin-top:6px">${esc(v.notes)}</div>`:""}</div>`).join("")+`</div>`;
+  out+=`<div class="sect"><h2>Volunteer roles</h2><div class="grow"></div><button class="btn pri sm" data-act="newrole">+ Role</button></div><p class="small muted">“Arrive” sets how early a shift starts when it’s tied to an event.</p>
+   <div class="card" style="padding:0;overflow:auto"><table class="t"><tr><th>Role</th><th>Group</th><th>Arrive</th><th>Training</th><th>Age</th><th>Duties</th></tr>${roles().map(r=>`<tr data-act="role" data-id="${r.id}" style="cursor:pointer"><td><b>${esc(r.name)}</b></td><td>${esc(r.group||"")}</td><td>${r.arriveMin?esc(r.arriveMin)+" min early":"—"}</td><td>${r.training?"Yes":""}</td><td>${esc(r.minAge||"")}</td><td class="muted">${esc(r.duties||"")}</td></tr>`).join("")}</table></div>`;
+  return out;
+}
+
+/* ---------- DATA ---------- */
+function vData(){
+  const f=F();
+  return `<div class="grid g2">
+  <div class="card"><h3>Import volunteers from Excel</h3><p class="small muted">Use your master list (.xlsx, .xls or .csv). One row per person, or one row per shift — you’ll match the columns before anything is saved. Re-importing updates people with the same name instead of duplicating them.</p>
+    <input type="file" id="xlsIn" accept=".xlsx,.xls,.csv,.ods"></div>
+  <div class="card"><h3>Export</h3><p class="small muted">A workbook with schedule, shifts and volunteers tabs to send to the coordinator, or a full backup you can restore later.</p>
+    <div class="row"><button class="btn" data-act="expxlsx">Excel workbook</button><button class="btn" data-act="expjson">Backup (.json)</button><label class="btn">Restore backup<input type="file" id="jsonIn" accept=".json" hidden></label></div></div>
+  <div class="card"><h3>Start next year from this year</h3><p class="small muted">Moves every event, shift and festival day by the same number of days, keeping weekdays aligned. Run sheets and checkmarks are cleared.</p>
+    <div class="row"><label class="f grow" style="margin:0">New opening day<input type="date" id="newStart" value="${esc(f.days&&f.days[0]?addDays(f.days[0],364):"")}"></label><button class="btn pri" data-act="shiftyear" style="margin-top:14px">Shift dates</button></div>
+    <p class="tiny muted" style="margin-bottom:0">Tip: export a backup first so you keep the ${esc(f.year||"")} record.</p></div>
+  <div class="card"><h3>Festival settings</h3>
+    <div class="fgrid"><label class="f">Festival name<input type="text" id="fsName" value="${esc(f.name)}"></label><label class="f">Year<input type="number" id="fsYear" value="${esc(f.year)}"></label>
+    <label class="f full">Festival days (comma separated, YYYY-MM-DD)<input type="text" id="fsDays" value="${esc((f.days||[]).join(", "))}"></label>
+    <label class="f full">Key contacts — one per line: Name | Role | Phone | Email<textarea id="fsContacts">${esc((f.contacts||[]).map(c=>[c.name,c.role,c.phone,c.email].join(" | ")).join("\n"))}</textarea></label></div>
+    <button class="btn pri" data-act="savefest">Save settings</button></div>
+  <div class="card"><h3>Template data</h3><p class="small muted">Loads the 2026 schedule, venues, roles and run-sheet checklist. Existing records with the same IDs are overwritten; your volunteers and shifts are kept.</p>
+    <button class="btn" data-act="seed">Load 2026 festival</button></div>
+  <div class="card"><h3>Layout on this device</h3><p class="small muted">Phone layout turns on automatically on small screens.</p><div class="seg">${[["auto","Automatic"],["phone","Phone"],["desktop","Desktop"]].map(([k,l])=>`<button data-act="setui" data-u="${k}" class="${ls.get("ecff-ui","auto")===k?"on":""}">${l}</button>`).join("")}</div></div>
+  <div class="card"><h3>Install on a phone</h3><p class="small muted">${Store.mode==="shared"?"This copy is shared: everyone you share it with sees the same schedule live. Bookmark it or add it to your home screen from the browser’s share menu.":"This copy saves to this device. Open it in Safari or Chrome and use “Add to Home Screen” to install it as an app that works offline."}</p></div>
+  <div class="card"><h3 style="color:var(--danger)">Clear everything</h3><p class="small muted">Deletes all events, venues, roles, volunteers, shifts and run sheets${Store.mode==="shared"?" for everyone":""}.</p><button class="btn dan" data-act="wipe">Clear all data…</button></div>
+  </div>`;
+}
+
+
+/* ============ PHONE VIEWS ============ */
+function pVenue(){const vs=venues();let id=ls.get("ecff-pvenue",null);if(!vs.some(v=>v.id===id)){const my=ls.get("ecff-myvenues",[]);id=(my[0]&&vs.some(v=>v.id===my[0]))?my[0]:(vs[0]||{}).id}return id}
+function pVenuePicker(cur){return `<div class="hscroll">${venues().map(v=>`<span class="chip ${v.id===cur?"on":""}" data-act="pven" data-id="${v.id}"><span class="dot" style="background:${v.color}"></span>${esc(v.name)}</span>`).join("")}</div>`}
+const telHref=n=>"tel:"+String(n||"").replace(/[^\d+]/g,""),smsHref=n=>"sms:"+String(n||"").replace(/[^\d+]/g,"");
+const until=m=>m<=0?"now":m>=60?Math.floor(m/60)+" h "+(m%60?m%60+" min":""):m+" min";
+function milestones(e){const st=toMin(e.start);return (e.type==="screening"||e.type==="music")?[[-60,"Theater manager on site"],[-45,"Scanners, projectionist, box office in"],[-30,"Line forms"],[-20,"Scanning begins"],[-10,"Release rush line"],[0,"Showtime"]].map(([o,t])=>({at:st+o,t})):[{at:st,t:"Starts"}]}
+function crewRow(s,showTime){const v=Store.get("volunteers",s.volunteerId)||{};const t=shiftTimes(s);
+  return `<div class="p-row"><div class="grow" data-act="shift" data-id="${s.id}"><div class="nm">${esc(v.name||"Open slot")}</div><div class="meta">${esc(s.role||"")}${showTime?" · "+fmtRange(t.start,t.end):""}${s.venueId&&showTime==="v"?" · "+esc(venueName(s.venueId)):""}</div></div>
+  ${v.phone?`<a class="p-call" href="${smsHref(v.phone)}" title="Text ${esc(v.phone)}">${ico(IC.msg,20)}</a><a class="p-call" href="${telHref(v.phone)}" title="Call ${esc(v.phone)}">${ico(IC.phone,20)}</a>`:""}</div>`}
+
+function pNow(){
+  const nc=nowCtx(),vid=pVenue(),v=Store.get("venues",vid)||{};
+  const evs=events().filter(e=>e.day===nc.day&&e.venueId===vid);
+  const cur=evs.find(e=>toMin(e.start)<=nc.min&&toMin(e.end)>nc.min),nxt=evs.find(e=>toMin(e.start)>nc.min);
+  const c0=(F().contacts||[])[0];
+  let out=`<div class="row" style="align-items:baseline"><div class="clock" style="font-size:30px">${fmt12(nc.min)}</div><div class="muted small grow">${dayLabel(nc.day)}</div>${nc.sim?`<a href="#more" class="badge warn" style="text-decoration:none">Practice clock</a>`:""}</div>
+   <div style="margin-top:10px">${pVenuePicker(vid)}</div>`;
+  if(!evs.length){const nd=festDays().find(d=>d>nc.day);
+    return out+`<div class="empty" style="margin-top:12px">Nothing at ${esc(v.name||"this venue")} today.${nd?`<br>Next festival day: <b>${dayLabel(nd,true)}</b>.`:""}<br><br><button class="btn" data-act="pclock">Practice a festival day</button></div>`}
+  if(cur){const len=toMin(cur.end)-toMin(cur.start),pct=Math.round((nc.min-toMin(cur.start))/len*100);
+    out+=`<div class="p-hero" data-act="ev" data-id="${cur.id}"><div class="lbl">Now playing · ${until(toMin(cur.end)-nc.min)} left</div><div class="ttl">${esc(cur.title)}</div><div class="sub">${fmtRange(cur.start,cur.end)}${cur.qa?" · Q&A after":""}</div><div class="p-prog"><i style="width:${pct}%"></i></div></div>`}
+  if(nxt){const ms=milestones(nxt);const ni=ms.findIndex(m=>m.at>nc.min);const nm=ms[ni];
+    out+=`<div class="p-hero" style="${cur?"background:var(--panel);color:var(--ink);border:1px solid var(--line)":""}"><div class="lbl" style="${cur?"color:var(--muted)":""}">Next · in ${until(toMin(nxt.start)-nc.min)}</div><div class="ttl" data-act="ev" data-id="${nxt.id}">${esc(nxt.title)}</div><div class="sub" style="${cur?"color:var(--muted)":""}">${fmtRange(nxt.start,nxt.end)}${nxt.qa?" · Q&A after":""}${nxt.notes?" · "+esc(nxt.notes):""}</div>
+     ${nm?`<div style="margin-top:12px"><div class="sub" style="${cur?"color:var(--muted)":""}">${esc(nm.t)} at ${fmt12(nm.at)}</div><div class="big">${until(nm.at-nc.min)}</div></div>`:""}
+     <div class="p-ms">${ms.map((m,i)=>`<div class="${m.at<=nc.min?"done":i===ni?"next":""}" style="${cur&&i!==ni?"color:var(--ink)":""}"><span>${fmt12(m.at)}</span><span>${esc(m.t)}</span></div>`).join("")}</div></div>`;
+    const rs=Store.get("runsheets",nxt.id)||{};const tpl=runTpl();const done=tpl.filter(i=>rs.checked&&rs.checked[i.key]).length;
+    out+=`<div class="p-actions"><a class="p-act" data-act="openrun" data-id="${nxt.id}" href="#run">${ico(IC.list)}Run sheet<span class="muted" style="font-weight:500">${done}/${tpl.length}</span></a>
+      <div class="p-act" data-act="prush" data-id="${nxt.id}"><b>${rs.rush!==undefined&&rs.rush!==""?esc(rs.rush):"—"}</b>Rush seats</div>
+      ${c0&&c0.phone?`<a class="p-act" href="${telHref(c0.phone)}">${ico(IC.phone)}Call ${esc((c0.name||"").split(" ")[0])}<span class="muted tiny" style="font-weight:500">${esc(c0.phone)}</span></a>`:`<a class="p-act" href="#crew">${ico(IC.users)}Crew</a>`}</div>`}
+  else if(!cur)out+=`<div class="empty" style="margin-top:12px">That’s a wrap for ${esc(v.name)} today.</div>`;
+  const sh=shifts().map(s=>Object.assign({},s,shiftTimes(s))).filter(s=>s.day===nc.day&&s.venueId===vid);
+  const on=sh.filter(s=>toMin(s.start)<=nc.min&&toMin(s.end)>nc.min),soon=sh.filter(s=>toMin(s.start)>nc.min&&toMin(s.start)-nc.min<=60);
+  out+=`<div class="p-h">On shift here (${on.length})</div>${on.length?on.map(s=>crewRow(s,true)).join(""):`<div class="muted small" style="padding:0 2px">No one on shift right now.</div>`}`;
+  if(soon.length)out+=`<div class="p-h">Arriving within the hour</div>${soon.map(s=>crewRow(s,true)).join("")}`;
+  const later=evs.filter(e=>toMin(e.start)>nc.min&&(!nxt||e.id!==nxt.id));
+  if(later.length)out+=`<div class="p-h">Later today</div>${later.map(e=>`<div class="p-row" data-act="ev" data-id="${e.id}"><div style="font-weight:700;min-width:64px;font-size:14px">${fmt12(e.start)}</div><div class="grow"><div class="nm">${esc(e.title)}</div><div class="meta">${fmtRange(e.start,e.end)}${e.qa?" · Q&A":""}</div></div></div>`).join("")}`;
+  return out;
+}
+function pSchedule(){
+  const days=allDays();let day=ls.get("ecff-sday",null);if(!days.includes(day)){const n=nowCtx().day;day=days.includes(n)?n:(festDays().find(d=>d>=n)||festDays()[0]||days[0])}
+  const vf=ls.get("ecff-svf",[]);const conf=eventConflicts();const nc=nowCtx();
+  let out=`<div class="hscroll">${days.map(d=>`<span class="chip ${d===day?"on":""}" data-act="sday" data-d="${d}">${dayLabel(d)}</span>`).join("")}</div>
+   <div class="hscroll" style="margin-top:6px">${venues().map(v=>`<span class="chip ${vf.includes(v.id)?"on":""}" data-act="svf" data-id="${v.id}" style="font-size:13px;padding:5px 11px"><span class="dot" style="background:${v.color}"></span>${esc(v.name)}</span>`).join("")}</div>`;
+  const list=events().filter(e=>e.day===day&&(!vf.length||vf.includes(e.venueId)));
+  if(!list.length)out+=`<div class="empty" style="margin-top:12px">No events on ${dayLabel(day)}.</div>`;
+  let lastH=-1;out+=`<div style="margin-top:8px">`;
+  list.forEach(e=>{const h=Math.floor(toMin(e.start)/60);if(h!==lastH){lastH=h;out+=`<div class="p-h" style="margin-top:12px">${fmt12(h*60)}</div>`}
+    const live=nc.day===e.day&&toMin(e.start)<=nc.min&&toMin(e.end)>nc.min;
+    out+=`<div class="p-row" data-act="ev" data-id="${e.id}" style="border-left:5px solid ${venueColor(e.venueId)}${live?";box-shadow:0 0 0 2px var(--accent)":""}"><div class="grow"><div class="nm" style="white-space:normal">${esc(e.title)}</div><div class="meta">${fmtRange(e.start,e.end)} · ${esc(venueName(e.venueId))}</div>
+      <div class="row" style="gap:4px;margin-top:4px">${live?'<span class="badge ok">Live</span>':""}${e.qa?'<span class="badge">Q&A</span>':""}${(conf[e.id]||[]).map(c=>`<span class="badge warn">${c.startsWith("Tight")?esc(c.split(":")[1].trim().split(" after")[0])+" turnover":"Overlap"}</span>`).join("")}</div></div></div>`});
+  out+=`</div><button class="btn pri" data-act="newev" data-d="${day}" style="position:fixed;right:calc(16px + env(safe-area-inset-right));bottom:calc(80px + env(safe-area-inset-bottom));border-radius:99px;padding:13px 18px;box-shadow:0 4px 14px rgba(0,0,0,.25);z-index:25">+ Event</button>`;
+  return out;
+}
+function pRun(){
+  const sc=events().filter(e=>["screening","music","talk"].includes(e.type));const nc=nowCtx();
+  let id=ls.get("ecff-runev",null);
+  if(!Store.get("events",id)){const vid=pVenue();id=(sc.find(e=>e.venueId===vid&&(e.day>nc.day||(e.day===nc.day&&toMin(e.end)>nc.min)))||sc.find(e=>e.day>nc.day||(e.day===nc.day&&toMin(e.end)>nc.min))||sc[0]||{}).id}
+  const ev=Store.get("events",id);if(!ev)return `<div class="empty">No shows yet.</div>`;
+  const rs=Store.get("runsheets",ev.id)||{checked:{}};const st=toMin(ev.start);
+  const items=runTpl().map(it=>Object.assign({},it,{at:it.offset==null||it.offset===""?null:st+(+it.offset)}));
+  const done=items.filter(i=>rs.checked&&rs.checked[i.key]).length;const pct=items.length?Math.round(done/items.length*100):0;
+  const nextDue=items.find(i=>!(rs.checked&&rs.checked[i.key]));
+  let out=`<div class="p-sticky"><select data-act="runev">${sc.map(e=>`<option value="${e.id}" ${e.id===id?"selected":""}>${dayLabel(e.day)} ${fmt12(e.start)} · ${esc(e.title)} · ${esc(venueName(e.venueId))}</option>`).join("")}</select>
+    <div class="row" style="margin-top:8px"><div class="grow"><div style="height:8px;border-radius:4px;background:var(--soft);overflow:hidden"><div style="height:100%;width:${pct}%;background:var(--accent)"></div></div></div><b class="small">${done}/${items.length}</b></div></div>
+    <div class="p-actions" style="grid-template-columns:1fr 1fr;margin-top:4px"><div class="p-act" data-act="prush" data-id="${ev.id}"><b>${rs.rush!==undefined&&rs.rush!==""?esc(rs.rush):"—"}</b>Rush seats · give to scanners ${fmt12(st-10)}</div>
+      <div class="p-act" data-act="pnotes" data-id="${ev.id}">${ico(IC.file)}Show notes${rs.notes?`<span class="muted tiny" style="font-weight:500">${esc(rs.notes.slice(0,28))}${rs.notes.length>28?"…":""}</span>`:""}</div></div>
+    <div style="margin-top:12px">`;
+  items.forEach(it=>{const c=!!(rs.checked&&rs.checked[it.key]);const due=!c&&it.at!=null&&nc.day===ev.day&&it.at<=nc.min;
+    out+=`<label class="p-chk ${c?"done":""} ${due||(!c&&nextDue&&nextDue.key===it.key&&nc.day===ev.day)?"due":""}"><input type="checkbox" data-act="chk" data-ev="${ev.id}" data-k="${it.key}" ${c?"checked":""}><span class="t">${it.at==null?"After":fmt12(it.at)}</span><span class="x grow">${esc(it.text)}${c&&rs.by&&rs.by[it.key]?`<span class="tiny muted" style="display:block">✓ ${esc(rs.by[it.key])}</span>`:""}</span></label>`});
+  const crew=shifts().filter(s=>s.eventId===ev.id);
+  out+=`</div><div class="p-h">Crew for this show (${crew.length})</div>${crew.map(s=>crewRow(s,true)).join("")||`<div class="muted small">No one assigned.</div>`}<button class="btn" style="width:100%;margin-top:6px" data-act="newshift" data-ev="${ev.id}">+ Add crew</button>`;
+  return out;
+}
+function pCrew(){
+  const nc=nowCtx();const mode=ls.get("ecff-pcrew","now");const q=ls.get("ecff-pq","");
+  let out=`<div class="seg" style="display:flex">${[["now","On now"],["today","Today"],["all","Everyone"]].map(([k,l])=>`<button style="flex:1" data-act="pcrew" data-m="${k}" class="${mode===k?"on":""}">${l}</button>`).join("")}</div>`;
+  if(mode==="all"){
+    out+=`<input type="search" id="pq" placeholder="Search name or role" value="${esc(q)}" style="margin-top:10px">`;
+    const list=vols().filter(v=>!q||norm([v.name,(v.roles||[]).join(" ")].join(" ")).includes(norm(q)));
+    out+=`<div style="margin-top:10px">${list.map(v=>`<div class="p-row"><div class="grow" data-act="vol" data-id="${v.id}"><div class="nm">${esc(v.name)}</div><div class="meta">${esc((v.roles||[]).join(", ")||v.email||"")}</div></div>${v.phone?`<a class="p-call" href="${smsHref(v.phone)}">${ico(IC.msg,20)}</a><a class="p-call" href="${telHref(v.phone)}">${ico(IC.phone,20)}</a>`:""}</div>`).join("")||`<div class="empty">${vols().length?"No matches.":"No volunteers yet."}</div>`}</div>
+      <button class="btn pri" data-act="newvol" style="width:100%;margin-top:8px">+ Volunteer</button>`;
+    return out}
+  const sh=shifts().map(s=>Object.assign({},s,shiftTimes(s))).filter(s=>s.day===nc.day&&(mode==="today"||(toMin(s.start)<=nc.min&&toMin(s.end)>nc.min))).sort(byTime);
+  if(!sh.length)return out+`<div class="empty" style="margin-top:12px">${mode==="now"?"No one is on shift right now.":"No shifts today."}</div>`;
+  const byV={};sh.forEach(s=>(byV[s.venueId]=byV[s.venueId]||[]).push(s));
+  venues().concat([{id:"",name:"No venue"}]).forEach(v=>{if(!byV[v.id])return;out+=`<div class="p-h"><span class="dot" style="background:${v.color||"#888"}"></span> ${esc(v.name)} (${byV[v.id].length})</div>${byV[v.id].map(s=>crewRow(s,true)).join("")}`});
+  return out;
+}
+function pMore(){
+  const ov=ls.get("ecff-clock",{on:false,day:festDays()[0]||dStr(new Date()),time:"13:45"});
+  const link=(h,i,l,sub)=>`<a href="#${h}">${ico(i,22)}<span class="grow">${l}${sub?`<span class="muted tiny" style="display:block;font-weight:500">${sub}</span>`:""}</span><span class="chev">›</span></a>`;
+  return `<div class="p-menu">${link("shifts",IC.cal,"All shifts",shifts().length+" shifts")}${link("people",IC.users,"Volunteer list",vols().length+" volunteers")}${link("venues",IC.pin,"Venues & roles")}${link("data",IC.file,"Import / export / settings","Excel import, backups, next year’s dates")}</div>
+   <div class="p-h">Practice clock</div><div class="card"><label class="row" style="gap:8px;font-weight:600"><input type="checkbox" id="clkOn" ${ov.on?"checked":""} style="width:22px;height:22px;accent-color:var(--accent)"> Pretend it’s…</label>
+    <div class="row" style="margin-top:8px;flex-wrap:nowrap"><select id="clkDay">${allDays().map(d=>`<option value="${d}" ${d===ov.day?"selected":""}>${dayLabel(d)}</option>`).join("")}</select><input type="time" id="clkTime" value="${esc(ov.time)}"></div>
+    <div class="tiny muted" style="margin-top:6px">Walk through a festival day ahead of time. Only affects this phone.</div></div>
+   <div class="p-h">Layout</div><div class="seg" style="display:flex">${[["auto","Automatic"],["phone","Phone"],["desktop","Desktop"]].map(([k,l])=>`<button style="flex:1" data-act="setui" data-u="${k}" class="${ls.get("ecff-ui","auto")===k?"on":""}">${l}</button>`).join("")}</div>
+   <div class="p-h">Install</div><div class="card small muted">${Store.mode==="shared"?"Open this page in Safari (iPhone) or Chrome (Android) and choose <b>Share → Add to Home Screen</b> for a one-tap icon. Everyone you share it with sees the same live schedule.":"Choose <b>Share → Add to Home Screen</b> to install. Works offline; data stays on this phone (use Import / export → Backup to move it)."}</div>
+   <div class="tiny muted" style="text-align:center;margin-top:16px">${esc(F().name)} ${esc(F().year||"")} · ${Store.mode==="shared"?"Shared":"This device"}</div>`;
+}
+function rushSheet(id){const ev=Store.get("events",id);const rs=Store.get("runsheets",id)||{};
+  modal(`<h2>Rush seats</h2><p class="small muted" style="margin-top:-6px">${esc(ev.title)} · ${fmt12(ev.start)} · ${esc(venueName(ev.venueId))}<br>Get the unfilled-seat count from the box office and give it to the scanners at ${fmt12(toMin(ev.start)-10)}.</p>
+   <input type="number" inputmode="numeric" id="rushP" value="${esc(rs.rush??"")}" placeholder="0" style="font-size:48px!important;font-family:Oswald,sans-serif;text-align:center;padding:14px">
+   <div class="row" style="margin-top:14px"><button class="btn grow" data-act="close">Cancel</button><button class="btn pri grow" data-act="saverush" data-ev="${id}">Save</button></div>`)}
+function notesSheet(id){const ev=Store.get("events",id);const rs=Store.get("runsheets",id)||{};
+  modal(`<h2>Show notes</h2><p class="small muted" style="margin-top:-6px">${esc(ev.title)} · ${fmt12(ev.start)}</p><textarea id="notesP" style="min-height:180px" placeholder="Attendance, issues, lost & found…">${esc(rs.notes||"")}</textarea>
+   <div class="row" style="margin-top:14px"><button class="btn grow" data-act="close">Cancel</button><button class="btn pri grow" data-act="savenotes" data-ev="${id}">Save</button></div>`)}
+
+/* ============ modals / forms ============ */
+function modal(html,wide){$("#mbox").className="box"+(wide?" wide":"");$("#mbox").innerHTML=html;$("#modal").classList.add("on");const f=$("#mbox input,#mbox select,#mbox textarea");f&&f.focus()}
+function closeModal(){$("#modal").classList.remove("on");$("#mbox").innerHTML="";scheduleRender()}
+$("#modal").addEventListener("mousedown",e=>{if(e.target.id==="modal")closeModal()});
+addEventListener("keydown",e=>{if(e.key==="Escape"&&$("#modal").classList.contains("on"))closeModal()});
+function confirmBox(msg,yes,label="Delete"){modal(`<h2>Are you sure?</h2><p>${msg}</p><div class="row"><div class="grow"></div><button class="btn" data-act="close">Cancel</button><button class="btn pri" id="cfYes" style="background:var(--danger);border-color:var(--danger);color:#fff">${label}</button></div>`);$("#cfYes").onclick=async()=>{$("#cfYes").disabled=true;try{await yes()}catch(e){}closeModal()}}
+const opt=(arr,cur,blank)=>(blank!=null?`<option value="">${blank}</option>`:"")+arr.map(([v,l])=>`<option value="${esc(v)}" ${String(cur)===String(v)?"selected":""}>${esc(l)}</option>`).join("");
+const TYPES=[["screening","Screening"],["music","Music"],["talk","Talk / filmmaker experience"],["redcarpet","Red carpet"],["gala","Gala"],["office","Office / box office"],["lounge","Lounge / bar"],["setup","Setup / teardown"],["training","Training"],["other","Other"]];
+
+function eventForm(e){
+  e=e||{day:ls.get("ecff-sday",festDays()[0]),start:"",end:"",type:"screening",venueId:(venues()[0]||{}).id};
+  modal(`<h2>${e.id?"Edit event":"New event"}</h2><div class="fgrid">
+   <label class="f full">Title<input type="text" id="eTitle" value="${esc(e.title||"")}"></label>
+   <label class="f">Day<input type="date" id="eDay" value="${esc(e.day||"")}"></label>
+   <label class="f">Venue<select id="eVenue">${opt(venues().map(v=>[v.id,v.name]),e.venueId)}</select></label>
+   <label class="f">Start<input type="time" id="eStart" value="${esc(e.start||"")}"></label>
+   <label class="f">End<input type="time" id="eEnd" value="${esc(e.end||"")}"></label>
+   <label class="f">Type<select id="eType">${opt(TYPES,e.type)}</select></label>
+   <label class="f" style="padding-top:22px"><span class="row" style="gap:6px;color:var(--ink);font-size:14px"><input type="checkbox" id="eQa" ${e.qa?"checked":""}> Q&A after</span></label>
+   <label class="f full">Notes (guests, moderator, special needs)<textarea id="eNotes">${esc(e.notes||"")}</textarea></label></div>
+   <div class="row">${e.id?`<button class="btn dan" data-act="delev" data-id="${e.id}">Delete</button><button class="btn" data-act="dupev" data-id="${e.id}">Duplicate</button>`:""}<div class="grow"></div><button class="btn" data-act="close">Cancel</button><button class="btn pri" id="eSave">Save</button></div>`);
+  $("#eSave").onclick=async()=>{const o=Object.assign({},e,{title:$("#eTitle").value.trim(),day:$("#eDay").value,venueId:$("#eVenue").value,start:$("#eStart").value,end:$("#eEnd").value,type:$("#eType").value,qa:$("#eQa").checked,notes:$("#eNotes").value.trim()});
+    if(!o.title||!o.day||!o.start)return toast("Title, day and start time are required");
+    if(o.end&&toMin(o.end)<toMin(o.start))return toast("End is before start");
+    try{await Store.put("events",o);closeModal();toast("Saved")}catch(err){}};
+}
+function eventDetail(id){
+  const e=Store.get("events",id);if(!e)return;const conf=eventConflicts()[id]||[];
+  const sh=shifts().filter(s=>s.eventId===id);
+  modal(`<div class="row"><span class="dot" style="background:${venueColor(e.venueId)};width:12px;height:12px"></span><h2 class="grow" style="margin:0">${esc(e.title)}</h2></div>
+   <p class="muted" style="margin:6px 0 10px">${dayLabel(e.day,true)} · ${fmtRange(e.start,e.end)} · ${esc(venueName(e.venueId))}${e.qa?" · Q&A after":""}</p>
+   ${e.notes?`<p>${esc(e.notes)}</p>`:""}${conf.map(c=>`<div class="badge warn" style="display:inline-block;margin:0 4px 8px 0">${esc(c)}</div>`).join("")}
+   ${(e.type==="screening"||e.type==="music")?`<div class="small muted">Line forms ${fmt12(toMin(e.start)-30)} · scanning ${fmt12(toMin(e.start)-20)} · rush released ${fmt12(toMin(e.start)-10)}</div>`:""}
+   <h3 style="margin:14px 0 6px;font-size:16px">Staffing (${sh.length})</h3>
+   ${sh.length?`<div class="list">${sh.map(s=>{const t=shiftTimes(s);return `<div class="item" data-act="shift" data-id="${s.id}"><div class="time">${fmt12(t.start)}</div><div class="grow">${esc(volName(s.volunteerId))} <span class="muted">· ${esc(s.role||"")}</span></div></div>`}).join("")}</div>`:`<p class="small muted">No one assigned yet.</p>`}
+   <div class="row" style="margin-top:14px"><button class="btn" data-act="newshift" data-ev="${id}">+ Staff</button><button class="btn" data-act="openrun" data-id="${id}">Run sheet</button><div class="grow"></div><button class="btn" data-act="close">Close</button><button class="btn pri" data-act="editev" data-id="${id}">Edit</button></div>`);
+}
+function shiftForm(s,evId){
+  s=s||{};if(evId&&!s.id){const ev=Store.get("events",evId);s={eventId:evId,venueId:ev.venueId,day:ev.day}}
+  const evs=events();
+  modal(`<h2>${s.id?"Edit shift":"New shift"}</h2><div class="fgrid">
+   <label class="f">Volunteer<select id="sVol">${opt(vols().map(v=>[v.id,v.name]),s.volunteerId,"— open slot —")}</select></label>
+   <label class="f">Role<input type="text" id="sRole" list="roleList" value="${esc(s.role||"")}"><datalist id="roleList">${roles().map(r=>`<option value="${esc(r.name)}">`).join("")}</datalist></label>
+   <label class="f full">Event (optional — times fill from the role’s arrival rule)<select id="sEv">${opt(evs.map(e=>[e.id,dayLabel(e.day)+" "+fmt12(e.start)+" · "+e.title+" ("+venueName(e.venueId)+")"]),s.eventId,"— not tied to an event —")}</select></label>
+   <label class="f">Venue<select id="sVenue">${opt(venues().map(v=>[v.id,v.name]),s.venueId,"—")}</select></label>
+   <label class="f">Day<input type="date" id="sDay" value="${esc(s.day||"")}"></label>
+   <label class="f">Start<input type="time" id="sStart" value="${esc(s.start||"")}"></label>
+   <label class="f">End<input type="time" id="sEnd" value="${esc(s.end||"")}"></label>
+   <label class="f full">Notes<input type="text" id="sNotes" value="${esc(s.notes||"")}"></label></div>
+   <p class="tiny muted" id="sHint"></p>
+   <div class="row">${s.id?`<button class="btn dan" data-act="delshift" data-id="${s.id}">Delete</button>`:""}<div class="grow"></div><button class="btn" data-act="close">Cancel</button><button class="btn pri" id="sSave">Save</button></div>`);
+  const hint=()=>{const ev=Store.get("events",$("#sEv").value);const r=roleByName($("#sRole").value);
+    $("#sHint").textContent=ev&&!$("#sStart").value?`Leave Start blank to use ${r?r.arriveMin+" min before showtime ("+fmt12(toMin(ev.start)-(+r.arriveMin||0))+")":"the event start"}.`:""};
+  $("#sEv").onchange=()=>{const ev=Store.get("events",$("#sEv").value);if(ev){$("#sVenue").value=ev.venueId;$("#sDay").value=ev.day}hint()};$("#sRole").oninput=hint;$("#sStart").oninput=hint;hint();
+  $("#sSave").onclick=async()=>{const o=Object.assign({},s,{volunteerId:$("#sVol").value,role:$("#sRole").value.trim(),eventId:$("#sEv").value,venueId:$("#sVenue").value,day:$("#sDay").value,start:$("#sStart").value,end:$("#sEnd").value,notes:$("#sNotes").value.trim()});
+    if(!o.eventId&&(!o.day||!o.start))return toast("Pick an event, or give a day and start time");
+    try{await Store.put("shifts",o);closeModal();toast("Shift saved")}catch(e){}};
+}
+function volText(v){
+  const list=shifts().filter(s=>s.volunteerId===v.id).map(s=>Object.assign({},s,shiftTimes(s))).sort(byTime);
+  const f=F();let t=`Hi ${v.name.split(" ")[0]}! Your ${f.name} shifts:\n`;
+  list.forEach(s=>{const ev=s.eventId&&Store.get("events",s.eventId);const vn=Store.get("venues",s.venueId)||{};t+=`\n• ${dayLabel(s.day)} ${fmtRange(s.start,s.end)} — ${s.role||"Volunteer"} at ${vn.name||""}${ev?" ("+ev.title+")":""}${vn.address?"\n  "+vn.address:""}`});
+  const c=f.contacts&&f.contacts[0];if(c)t+=`\n\nRunning late or sick? Call/text ${c.name}: ${c.phone}`;
+  return t;
+}
+function volDetail(id){
+  const v=Store.get("volunteers",id);if(!v)return;const list=shifts().filter(s=>s.volunteerId===id).map(s=>Object.assign({},s,shiftTimes(s))).sort(byTime);
+  modal(`<h2>${esc(v.name)}</h2><p class="muted">${esc(v.phone||"")} ${esc(v.email||"")}</p>${(v.roles||[]).length?`<div class="chips">${v.roles.map(r=>`<span class="badge">${esc(r)}</span>`).join("")}</div>`:""}${v.notes?`<p>${esc(v.notes)}</p>`:""}
+   <h3 style="margin:14px 0 6px;font-size:16px">Shifts (${list.length})</h3>${list.length?`<div class="list">${list.map(s=>`<div class="item" data-act="shift" data-id="${s.id}"><div class="time">${dayLabel(s.day)}<br>${fmtRange(s.start,s.end)}</div><div class="grow">${esc(s.role||"")}<div class="small muted">${esc(venueName(s.venueId))}</div></div></div>`).join("")}</div>`:`<p class="small muted">None yet.</p>`}
+   <h3 style="margin:14px 0 6px;font-size:16px">Schedule message</h3><pre class="copy" id="vtext">${esc(volText(v))}</pre>
+   <div class="row"><button class="btn dan" data-act="delvol" data-id="${id}">Delete</button><div class="grow"></div><button class="btn" data-act="copytext">Copy message</button><button class="btn" data-act="newshiftv" data-id="${id}">+ Shift</button><button class="btn pri" data-act="editvol" data-id="${id}">Edit</button></div>`);
+}
+function volForm(v){
+  v=v||{roles:[]};
+  modal(`<h2>${v.id?"Edit volunteer":"New volunteer"}</h2><div class="fgrid"><label class="f full">Name<input type="text" id="vName" value="${esc(v.name||"")}"></label>
+   <label class="f">Phone<input type="tel" id="vPhone" value="${esc(v.phone||"")}"></label><label class="f">Email<input type="email" id="vEmail" value="${esc(v.email||"")}"></label>
+   <label class="f full">Roles they can do (comma separated)<input type="text" id="vRoles" value="${esc((v.roles||[]).join(", "))}" placeholder="Usher, Ticket Scanner"></label>
+   <label class="f full">Notes (availability, training done, shirt size)<textarea id="vNotes">${esc(v.notes||"")}</textarea></label></div>
+   <div class="row"><div class="grow"></div><button class="btn" data-act="close">Cancel</button><button class="btn pri" id="vSave">Save</button></div>`);
+  $("#vSave").onclick=async()=>{const o=Object.assign({},v,{name:$("#vName").value.trim(),phone:$("#vPhone").value.trim(),email:$("#vEmail").value.trim(),roles:$("#vRoles").value.split(",").map(x=>x.trim()).filter(Boolean),notes:$("#vNotes").value.trim()});
+    if(!o.name)return toast("Name is required");try{await Store.put("volunteers",o);closeModal();toast("Saved")}catch(e){}};
+}
+function venueForm(v){
+  v=v||{color:"#2c7be5"};
+  modal(`<h2>${v.id?"Edit venue":"New venue"}</h2><div class="fgrid"><label class="f">Name<input type="text" id="nName" value="${esc(v.name||"")}"></label><label class="f">Color<input type="color" id="nColor" value="${esc(v.color||"#2c7be5")}" style="height:38px;padding:2px"></label>
+   <label class="f full">Address<input type="text" id="nAddr" value="${esc(v.address||"")}"></label><label class="f full">Notes (concessions, capacity, load-in, Wi-Fi)<textarea id="nNotes">${esc(v.notes||"")}</textarea></label></div>
+   <div class="row">${v.id?`<button class="btn dan" data-act="delvenue" data-id="${v.id}">Delete</button>`:""}<div class="grow"></div><button class="btn" data-act="close">Cancel</button><button class="btn pri" id="nSave">Save</button></div>`);
+  $("#nSave").onclick=async()=>{const o=Object.assign({},v,{name:$("#nName").value.trim(),color:$("#nColor").value,address:$("#nAddr").value.trim(),notes:$("#nNotes").value.trim()});if(!o.name)return toast("Name is required");try{await Store.put("venues",o);closeModal()}catch(e){}};
+}
+function roleForm(r){
+  r=r||{arriveMin:30};
+  modal(`<h2>${r.id?"Edit role":"New role"}</h2><div class="fgrid"><label class="f">Name<input type="text" id="rName" value="${esc(r.name||"")}"></label><label class="f">Group<input type="text" id="rGroup" value="${esc(r.group||"")}"></label>
+   <label class="f">Arrive (minutes before event)<input type="number" id="rArr" value="${esc(r.arriveMin??0)}"></label><label class="f">Minimum age<input type="text" id="rAge" value="${esc(r.minAge||"")}" placeholder="21+"></label>
+   <label class="f full"><span class="row" style="gap:6px;color:var(--ink);font-size:14px"><input type="checkbox" id="rTr" ${r.training?"checked":""}> Training required</span></label>
+   <label class="f full">Duties<textarea id="rDuty">${esc(r.duties||"")}</textarea></label></div>
+   <div class="row">${r.id?`<button class="btn dan" data-act="delrole" data-id="${r.id}">Delete</button>`:""}<div class="grow"></div><button class="btn" data-act="close">Cancel</button><button class="btn pri" id="rSave">Save</button></div>`);
+  $("#rSave").onclick=async()=>{const o=Object.assign({},r,{name:$("#rName").value.trim(),group:$("#rGroup").value.trim(),arriveMin:+$("#rArr").value||0,minAge:$("#rAge").value.trim(),training:$("#rTr").checked,duties:$("#rDuty").value.trim()});if(!o.name)return toast("Name is required");try{await Store.put("roles",o);closeModal()}catch(e){}};
+}
+function tplForm(){
+  const t=runTpl().map(i=>(i.offset==null||i.offset===""?"after":i.offset)+" | "+i.text).join("\n");
+  modal(`<h2>Run-sheet checklist template</h2><p class="small muted">One task per line: <b>minutes from showtime</b> | task. Use negative numbers for before (−60 = an hour early) and “after” for post-show tasks. Applies to every show.</p>
+   <textarea id="tplT" style="min-height:300px;font-family:ui-monospace,monospace;font-size:13px">${esc(t)}</textarea>
+   <div class="row" style="margin-top:10px"><div class="grow"></div><button class="btn" data-act="close">Cancel</button><button class="btn pri" id="tplSave">Save template</button></div>`,true);
+  $("#tplSave").onclick=async()=>{const old=runTpl();const items=$("#tplT").value.split("\n").map(l=>l.trim()).filter(Boolean).map((l,i)=>{const m=/^([+-]?\d+|after)\s*\|\s*(.+)$/i.exec(l.replace("−","-"));
+      const text=m?m[2].trim():l;const offset=m&&!/after/i.test(m[1])?+m[1]:null;const prev=old.find(o=>o.text===text);return {key:prev?prev.key:"k"+uid(""),offset,text}});
+    try{await Store.put("meta",{id:"runsheet",items});closeModal();toast("Template saved")}catch(e){}};
+}
+
+/* ============ Excel import ============ */
+const FIELDS=[["name","Full name",["name","full name","volunteer","volunteer name"]],["first","First name",["first","first name","firstname","given"]],["last","Last name",["last","last name","lastname","surname"]],
+ ["phone","Phone",["phone","cell","mobile","phone number","telephone"]],["email","Email",["email","e mail","email address"]],["role","Role(s)",["role","roles","position","job","assignment","task"]],
+ ["venue","Venue / location",["venue","location","site","where","theater","theatre"]],["date","Date / day",["date","day","shift date"]],["start","Start time",["start","start time","from","time in","begin","arrive"]],
+ ["end","End time",["end","end time","to","time out","finish"]],["range","Time range (e.g. 2–4:30pm)",["time","times","shift","shift time","hours"]],["event","Event / film",["event","film","screening","show","movie"]],["notes","Notes",["notes","note","comments","availability"]]];
+function guessCol(headers,aliases){const h=headers.map(norm);for(const a of aliases){const i=h.indexOf(a);if(i>=0)return i}for(const a of aliases){const i=h.findIndex(x=>x&&x.includes(a)&&a.length>2);if(i>=0)return i}return -1}
+function parseTime(v){
+  if(v==null||v==="")return"";if(typeof v==="number"){if(v<1)return fromMin(Math.round(v*1440));return""}
+  if(v instanceof Date)return fromMin(v.getHours()*60+v.getMinutes());
+  const s=String(v).trim().toLowerCase().replace(/\./g,"");const m=/^(\d{1,2})(?::(\d{2}))?(?::\d{2})?\s*(am|pm|a|p)?$/.exec(s);if(!m)return"";
+  let h=+m[1],mm=+(m[2]||0);const ap=m[3];if(ap&&ap[0]==="p"&&h<12)h+=12;if(ap&&ap[0]==="a"&&h===12)h=0;if(!ap&&h>=1&&h<=7)h+=12; // bare 1–7 = afternoon
+  return h<24&&mm<60?fromMin(h*60+mm):"";
+}
+function parseRange(v){const s=String(v||"").toLowerCase().replace(/\s+/g," ").trim();const parts=s.split(/\s*(?:-|–|—|to)\s*/);if(parts.length<2)return{};let [a,b]=parts;const apB=(/(am|pm|a|p)$/.exec(b)||[])[1];
+  if(apB&&!/(am|pm|a|p)$/.test(a)){const ta=parseTime(a+apB),tb=parseTime(b);if(ta&&tb&&toMin(ta)>toMin(tb))return{start:parseTime(a+(apB[0]==="p"?"am":"pm")),end:tb};return{start:ta,end:tb}}return{start:parseTime(a),end:parseTime(b)}}
+function parseDay(v){
+  if(v==null||v==="")return"";const days=allDays().length?allDays():[];
+  if(v instanceof Date&&!isNaN(v))return dStr(v);
+  if(typeof v==="number"&&v>30000){const d=new Date(Math.round((v-25569)*864e5));return dStr(new Date(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate()))}
+  const s=String(v).trim();let m;
+  if((m=/^(\d{4})-(\d{1,2})-(\d{1,2})/.exec(s)))return dStr(new Date(+m[1],+m[2]-1,+m[3]));
+  if((m=/^(\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))?/.exec(s))){let y=m[3]?+m[3]:(F().year||new Date().getFullYear());if(y<100)y+=2000;return dStr(new Date(y,+m[1]-1,+m[2]))}
+  const low=s.toLowerCase();const mi=MON.findIndex(x=>low.includes(x.toLowerCase()));
+  if(mi>=0&&(m=/(\d{1,2})(?!\d)/.exec(low.replace(/\d{4}/,"")))){const y=(/(\d{4})/.exec(low)||[])[1]||F().year||new Date().getFullYear();return dStr(new Date(+y,mi,+m[1]))}
+  const wd=["sun","mon","tue","wed","thu","fri","sat"].findIndex(x=>low.startsWith(x));if(wd>=0){const d=days.find(d=>dParse(d).getDay()===wd);if(d)return d}
+  return"";
+}
+let IMP=null;const DRAFT={};
+async function startImport(file){
+  if(!window.XLSX)return toast("The spreadsheet reader is still loading — try again in a moment");
+  try{const buf=await file.arrayBuffer();const wb=XLSX.read(buf,{type:"array",cellDates:true});IMP={wb,file:file.name,sheet:wb.SheetNames[0]};importStep()}catch(e){toast("Couldn't read that file: "+e.message)}
+}
+function importStep(){
+  const ws=IMP.wb.Sheets[IMP.sheet];const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:"",raw:true}).filter(r=>r.some(c=>String(c).trim()!==""));
+  let hi=rows.findIndex(r=>r.filter(c=>typeof c==="string"&&c.trim()).length>=2);if(hi<0)hi=0;
+  const headers=(rows[hi]||[]).map(String);const data=rows.slice(hi+1);
+  if(!IMP.map||IMP.mapSheet!==IMP.sheet){IMP.map={};FIELDS.forEach(([k,,al])=>IMP.map[k]=guessCol(headers,al));const Mp=IMP.map;if(Mp.first>=0&&Mp.last>=0&&(Mp.name===Mp.first||Mp.name===Mp.last))Mp.name=-1;else if(Mp.name>=0&&Mp.name===Mp.first)Mp.first=-1;IMP.mapSheet=IMP.sheet}
+  IMP.headers=headers;IMP.data=data;
+  const plan=buildImport();
+  modal(`<h2>Import “${esc(IMP.file)}”</h2>
+   ${IMP.wb.SheetNames.length>1?`<label class="f" style="max-width:300px">Sheet<select id="impSheet">${opt(IMP.wb.SheetNames.map(n=>[n,n]),IMP.sheet)}</select></label>`:""}
+   <p class="small muted">Match your columns. Leave a field as “—” if your sheet doesn’t have it. Rows with a date and time become shifts.</p>
+   <div class="fgrid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))">${FIELDS.map(([k,l])=>`<label class="f">${l}<select data-map="${k}">${opt(headers.map((h,i)=>[i,h||"Column "+(i+1)]),IMP.map[k],"—")}</select></label>`).join("")}</div>
+   <div class="card" style="background:var(--soft);border:0;margin:6px 0 10px"><b>${plan.newV.length} new</b> volunteers, <b>${plan.updV.length}</b> updated, <b>${plan.shifts.length}</b> shifts${plan.newVenues.length?`, <b>${plan.newVenues.length}</b> new venues (${esc(plan.newVenues.map(v=>v.name).join(", "))})`:""}.${plan.skipped?` <span class="muted">${plan.skipped} rows skipped (no name).</span>`:""}${plan.badTime?` <span style="color:var(--warn)">${plan.badTime} rows have a date but no readable time.</span>`:""}</div>
+   <div class="scroll"><table class="t"><tr><th>Name</th><th>Phone</th><th>Role</th><th>Venue</th><th>Day</th><th>Time</th><th>Event</th></tr>${plan.preview.slice(0,60).map(p=>`<tr><td>${esc(p.name)}</td><td>${esc(p.phone)}</td><td>${esc(p.role)}</td><td>${esc(p.venue)}</td><td>${p.day?dayLabel(p.day):""}</td><td>${p.start?fmtRange(p.start,p.end):""}</td><td>${esc(p.evTitle||"")}</td></tr>`).join("")}</table></div>
+   <label class="row small" style="margin-top:10px;gap:6px"><input type="checkbox" id="impReplace"> Replace existing shifts for these volunteers (use when re-importing an updated schedule)</label>
+   <div class="row" style="margin-top:12px"><div class="grow"></div><button class="btn" data-act="close">Cancel</button><button class="btn pri" id="impGo" ${plan.newV.length+plan.updV.length+plan.shifts.length?"":"disabled"}>Import</button></div>`,true);
+  $$("[data-map]").forEach(s=>s.onchange=()=>{IMP.map[s.dataset.map]=s.value===""?-1:+s.value;importStep()});
+  const sh=$("#impSheet");if(sh)sh.onchange=()=>{IMP.sheet=sh.value;importStep()};
+  $("#impGo").onclick=async()=>{$("#impGo").disabled=true;$("#impGo").textContent="Importing…";const p=buildImport();const ops=[];
+    p.newVenues.forEach(v=>ops.push({col:"venues",obj:v}));p.newV.concat(p.updV).forEach(v=>ops.push({col:"volunteers",obj:v}));
+    if($("#impReplace").checked){const ids=new Set(p.updV.map(v=>v.id));shifts().filter(s=>ids.has(s.volunteerId)).forEach(s=>ops.push({col:"shifts",del:s.id}))}
+    p.shifts.forEach(s=>ops.push({col:"shifts",obj:s}));
+    try{await Store.bulk(ops,(d,n)=>{const b=$("#impGo");if(b)b.textContent=`Importing… ${d}/${n}`});closeModal();toast(`Imported ${p.newV.length+p.updV.length} volunteers and ${p.shifts.length} shifts`);location.hash="people"}catch(e){closeModal()}};
+}
+function buildImport(){
+  const M=IMP.map,get=(r,k)=>M[k]>=0?r[M[k]]:"",str=v=>v instanceof Date?dStr(v):String(v??"").trim();
+  const existing={};vols().forEach(v=>existing[norm(v.name)]=v);
+  const venueList=venues().slice();const newVenues=[];
+  const findVenue=t=>{const n=norm(t);if(!n)return"";let v=venueList.find(v=>norm(v.name)===n)||venueList.find(v=>norm(v.name).includes(n)||n.includes(norm(v.name).split(" ").filter(w=>w!=="the")[0]||"~"));
+    if(!v){v={id:uid("v"),name:str(t),address:"",notes:"Added by import",color:"#7f8c8d"};venueList.push(v);newVenues.push(v)}return v.id};
+  const touched={},shiftsOut=[],preview=[];let skipped=0,badTime=0;
+  IMP.data.forEach(r=>{
+    let name=str(get(r,"name"));if(!name)name=[str(get(r,"first")),str(get(r,"last"))].filter(Boolean).join(" ");
+    if(!name){skipped++;return}
+    const key=norm(name);const base=touched[key]||(existing[key]?clone(existing[key]):{id:uid("p"),name,roles:[]});
+    const phone=str(get(r,"phone")),email=str(get(r,"email")),role=str(get(r,"role")),notes=str(get(r,"notes"));
+    if(phone)base.phone=phone;if(email)base.email=email;if(notes&&!(base.notes||"").includes(notes))base.notes=[base.notes,notes].filter(Boolean).join(" · ");
+    role.split(/[,;\/]/).map(x=>x.trim()).filter(Boolean).forEach(x=>{if(!base.roles.some(y=>norm(y)===norm(x)))base.roles.push(x)});
+    touched[key]=base;
+    const day=parseDay(get(r,"date"));let start=parseTime(get(r,"start")),end=parseTime(get(r,"end"));
+    if(!start&&M.range>=0){const rg=parseRange(get(r,"range"));start=rg.start||"";end=end||rg.end||""}
+    const venueTxt=str(get(r,"venue")),evTxt=str(get(r,"event"));
+    let ev=null;if(evTxt){const n=norm(evTxt);ev=events().find(e=>(!day||e.day===day)&&norm(e.title)===n)||events().find(e=>(!day||e.day===day)&&(norm(e.title).includes(n)||n.includes(norm(e.title))))}
+    const p={name,phone,role,venue:venueTxt,day:day||(ev&&ev.day)||"",start,end,evTitle:ev?ev.title:evTxt};preview.push(p);
+    if(day&&!start&&!ev)badTime++;
+    if((day&&start)||ev){const venueId=venueTxt?findVenue(venueTxt):(ev?ev.venueId:"");
+      shiftsOut.push({id:uid("s"),volunteerId:base.id,role:role.split(/[,;\/]/)[0].trim(),venueId,day:p.day,start,end,eventId:ev?ev.id:"",notes:""})}
+  });
+  const all=Object.values(touched);
+  return{newV:all.filter(v=>!existing[norm(v.name)]),updV:all.filter(v=>existing[norm(v.name)]),shifts:shiftsOut,newVenues,preview,skipped,badTime};
+}
+
+/* ============ export / bundle ============ */
+function bundle(){const o={version:1,exported:new Date().toISOString()};COLS.forEach(c=>o[c]=Store.arr(c));o.meta=Store.arr("meta");return o}
+async function importBundle(b,replace){
+  const ops=[];if(replace)COLS.forEach(c=>Store.arr(c).forEach(x=>ops.push({col:c,del:x.id})));
+  ["venues","events","roles","volunteers","shifts","runsheets"].forEach(c=>(b[c]||[]).forEach(x=>ops.push({col:c,obj:x})));
+  const meta=b.meta;if(Array.isArray(meta))meta.forEach(m=>ops.push({col:"meta",obj:m}));else if(meta&&typeof meta==="object")Object.keys(meta).forEach(k=>ops.push({col:"meta",obj:Object.assign({id:k},meta[k])}));
+  await Store.bulk(ops,(d,n)=>{const p=$("#busy");if(p)p.textContent=`Saving ${d} of ${n}…`});
+}
+async function saveFile(name,data){
+  if(Store.downloads){try{await Store.downloads.save({filename:name,data});toast("Saved "+name);return}catch(e){if(e&&e.code==="declined")return;if(e&&e.code==="rate_limited")return toast("A save prompt is already open")}}
+  if(Store.mode==="local"&&!window.claude){const blob=data instanceof Blob?data:new Blob([data]);const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);return}
+  if(typeof data==="string"){modal(`<h2>Copy your backup</h2><p class="small muted">Downloads aren’t available here, so copy this text and save it as <b>${esc(name)}</b>.</p><pre class="copy" id="vtext">${esc(data)}</pre><div class="row"><div class="grow"></div><button class="btn" data-act="close">Close</button><button class="btn pri" data-act="copytext">Copy</button></div>`,true)}
+  else toast("Downloads aren’t available in this view");
+}
+function exportXlsx(){
+  if(!window.XLSX)return toast("Still loading the spreadsheet library");
+  const wb=XLSX.utils.book_new();
+  const sched=events().map(e=>({Day:dayLabel(e.day),Date:e.day,Start:fmt12(e.start),End:fmt12(e.end),Event:e.title,Venue:venueName(e.venueId),Type:e.type,"Q&A":e.qa?"Yes":"",Notes:e.notes||""}));
+  const sh=shifts().map(s=>Object.assign({},s,shiftTimes(s))).sort(byTime).map(s=>{const v=Store.get("volunteers",s.volunteerId)||{};const ev=s.eventId&&Store.get("events",s.eventId);return{Day:dayLabel(s.day),Date:s.day,Start:fmt12(s.start),End:fmt12(s.end),Volunteer:v.name||"(open)",Role:s.role||"",Venue:venueName(s.venueId),Event:ev?ev.title:"",Phone:v.phone||"",Notes:s.notes||""}});
+  const vl=vols().map(v=>({Name:v.name,Phone:v.phone||"",Email:v.email||"",Roles:(v.roles||[]).join(", "),Shifts:shifts().filter(s=>s.volunteerId===v.id).length,Notes:v.notes||""}));
+  [["Schedule",sched],["Shifts",sh],["Volunteers",vl]].forEach(([n,rows])=>{const ws=XLSX.utils.json_to_sheet(rows.length?rows:[{}]);ws["!cols"]=Object.keys(rows[0]||{}).map(k=>({wch:Math.min(42,Math.max(k.length,...rows.map(r=>String(r[k]).length))+2)}));XLSX.utils.book_append_sheet(wb,ws,n)});
+  const out=XLSX.write(wb,{bookType:"xlsx",type:"array"});saveFile(`ECFF-${F().year||""}-operations.xlsx`,new Blob([out]));
+}
+
+/* ============ events ============ */
+document.addEventListener("click",async ev=>{
+  const t=ev.target.closest("[data-act]");if(!t)return;const a=t.dataset.act,id=t.dataset.id;
+  if(t.tagName==="INPUT"&&t.type==="checkbox"&&a!=="chk")return;
+  switch(a){
+    case"close":closeModal();break;
+    case"pven":ls.set("ecff-pvenue",id);ls.set("ecff-runev",null);render();break;
+    case"pcrew":ls.set("ecff-pcrew",t.dataset.m);render();break;
+    case"setui":ls.set("ecff-ui",t.dataset.u);if(!isPhone()&&["crew","more"].includes(location.hash.slice(1)))location.hash="data";render();break;
+    case"pclock":location.hash="more";break;
+    case"prush":rushSheet(id);setTimeout(()=>{const i=$("#rushP");i&&i.select()},50);break;
+    case"pnotes":notesSheet(id);break;
+    case"saverush":case"savenotes":{const e=t.dataset.ev;const rs=clone(Store.get("runsheets",e)||{checked:{},by:{}});if(a==="saverush")rs.rush=$("#rushP").value;else rs.notes=$("#notesP").value;rs.id=e;t.disabled=true;try{await Store.put("runsheets",rs);closeModal();toast("Saved")}catch(x){t.disabled=false}break}
+    case"seed":{if(t.disabled)return;t.disabled=true;t.textContent="Loading…";try{const r=await fetch("seed.json");if(!r.ok)throw new Error("template file not found");await importBundle(await r.json(),false);toast("2026 festival loaded");location.hash="schedule"}catch(e){toast("Couldn't load the template: "+e.message)}t.disabled=false;t.textContent="Load 2026 festival";break}
+    case"myv":{const m=ls.get("ecff-myvenues",[]);ls.set("ecff-myvenues",m.includes(id)?m.filter(x=>x!==id):m.concat(id));render();break}
+    case"sday":ls.set("ecff-sday",t.dataset.d);render();break;
+    case"smode":ls.set("ecff-smode",t.dataset.m);render();break;
+    case"svf":{const m=ls.get("ecff-svf",[]);ls.set("ecff-svf",m.includes(id)?m.filter(x=>x!==id):m.concat(id));render();break}
+    case"ev":eventDetail(id);break;
+    case"editev":eventForm(Store.get("events",id));break;
+    case"newev":eventForm({day:t.dataset.d||festDays()[0],type:"screening",venueId:(venues()[0]||{}).id});break;
+    case"dupev":{const e=clone(Store.get("events",id));delete e.id;e.title+=" (copy)";eventForm(e);break}
+    case"delev":confirmBox("Delete this event? Shifts tied to it stay but lose their link.",()=>Store.del("events",id));break;
+    case"shift":shiftForm(Store.get("shifts",id));break;
+    case"newshift":shiftForm(null,t.dataset.ev);break;
+    case"newshiftv":shiftForm({volunteerId:id});break;
+    case"delshift":confirmBox("Delete this shift?",()=>Store.del("shifts",id));break;
+    case"vol":volDetail(id);break;case"editvol":volForm(Store.get("volunteers",id));break;case"newvol":volForm();break;
+    case"delvol":confirmBox("Delete this volunteer and all their shifts?",async()=>{await Store.bulk(shifts().filter(s=>s.volunteerId===id).map(s=>({col:"shifts",del:s.id})).concat([{col:"volunteers",del:id}]))});break;
+    case"venue":venueForm(Store.get("venues",id));break;case"newvenue":venueForm();break;case"delvenue":confirmBox("Delete this venue?",()=>Store.del("venues",id));break;
+    case"role":roleForm(Store.get("roles",id));break;case"newrole":roleForm();break;case"delrole":confirmBox("Delete this role?",()=>Store.del("roles",id));break;
+    case"copytext":{const txt=$("#vtext").textContent;try{await navigator.clipboard.writeText(txt);toast("Copied")}catch(e){const r=document.createRange();r.selectNodeContents($("#vtext"));getSelection().removeAllRanges();getSelection().addRange(r);toast("Press Ctrl/Cmd+C to copy")}break}
+    case"openrun":ev.preventDefault();ls.set("ecff-runev",id);if($("#modal").classList.contains("on"))closeModal();location.hash="run";render();break;
+    case"edittpl":tplForm();break;
+    case"chk":{const e=t.dataset.ev,k=t.dataset.k;const rs=clone(Store.get("runsheets",e)||{checked:{},rush:"",notes:"",by:{}});rs.checked=rs.checked||{};rs.by=rs.by||{};
+      if(t.checked){rs.checked[k]=true;rs.by[k]=new Date().toLocaleTimeString([], {hour:"numeric",minute:"2-digit"})}else{delete rs.checked[k];delete rs.by[k]}rs.id=e;try{await Store.put("runsheets",rs)}catch(x){}break}
+    case"saverun":{const e=t.dataset.ev;const rs=clone(Store.get("runsheets",e)||{checked:{},by:{}});rs.rush=$("#rushN").value;rs.notes=$("#runNotes").value;rs.id=e;delete DRAFT["rush:"+e];delete DRAFT["notes:"+e];try{await Store.put("runsheets",rs);toast("Saved")}catch(x){}break}
+    case"expjson":saveFile(`ECFF-${F().year||""}-backup.json`,JSON.stringify(bundle(),null,1));break;
+    case"expxlsx":exportXlsx();break;
+    case"savefest":{const days=$("#fsDays").value.split(",").map(s=>parseDay(s.trim())).filter(Boolean);
+      const contacts=$("#fsContacts").value.split("\n").map(l=>l.split("|").map(x=>x.trim())).filter(p=>p[0]).map(([name,role,phone,email])=>({name,role:role||"",phone:phone||"",email:email||""}));
+      try{await Store.put("meta",Object.assign({},Store.get("meta","festival")||{},{id:"festival",name:$("#fsName").value.trim()||"Festival",year:+$("#fsYear").value||"",days,contacts}));toast("Settings saved")}catch(e){}break}
+    case"shiftyear":{const nd=$("#newStart").value;const old=festDays()[0];if(!nd||!old)return toast("Pick the new opening day");
+      const delta=Math.round((dParse(nd)-dParse(old))/864e5);if(!delta)return toast("That's the same date");
+      confirmBox(`Move all events and shifts by ${delta} days (${dayLabel(old)} → ${dayLabel(nd)})? ${delta%7?"<br><b>Heads up:</b> weekdays won’t line up.":""}`,async()=>{
+        const ops=[];events().forEach(e=>ops.push({col:"events",obj:Object.assign({},e,{day:addDays(e.day,delta)})}));
+        shifts().forEach(s=>ops.push({col:"shifts",obj:Object.assign({},s,{day:s.day?addDays(s.day,delta):s.day})}));
+        Store.arr("runsheets").forEach(r=>ops.push({col:"runsheets",del:r.id}));
+        const f=Object.assign({},Store.get("meta","festival")||{},{id:"festival"});f.days=(f.days||[]).map(d=>addDays(d,delta));f.year=dParse(f.days[0]||nd).getFullYear();ops.push({col:"meta",obj:f});
+        await Store.bulk(ops);ls.set("ecff-sday",null);toast("Dates moved to "+f.year)},"Move dates");break}
+    case"wipe":confirmBox(`This deletes every record${Store.mode==="shared"?" for everyone using this app":""}. Export a backup first if you might want it.`,async()=>{const ops=[];COLS.forEach(c=>Store.arr(c).forEach(x=>ops.push({col:c,del:x.id})));await Store.bulk(ops);toast("Cleared")},"Delete everything");break;
+  }
+});
+document.addEventListener("change",async ev=>{
+  const t=ev.target;
+  if(t.id==="xlsIn"&&t.files[0]){startImport(t.files[0]);t.value=""}
+  if(t.id==="jsonIn"&&t.files[0]){try{const b=JSON.parse(await t.files[0].text());const f=t.files[0].name;t.value="";confirmBox(`Restore “${esc(f)}”? This replaces all current data.`,async()=>{await importBundle(b,true);toast("Backup restored")},"Restore")}catch(e){toast("That isn't a valid backup file")}}
+  if(t.dataset.act==="shf"){const f=ls.get("ecff-shf",{});f[t.dataset.k]=t.value;ls.set("ecff-shf",f);render()}
+  if(t.dataset.act==="runev"){ls.set("ecff-runev",t.value);render()}
+  if(["clkOn","clkDay","clkTime"].includes(t.id)){ls.set("ecff-clock",{on:$("#clkOn").checked,day:$("#clkDay").value,time:$("#clkTime").value||"12:00"});render()}
+});
+document.addEventListener("input",ev=>{if(ev.target.id==="rushN")DRAFT["rush:"+ev.target.dataset.ev]=ev.target.value;if(ev.target.id==="runNotes")DRAFT["notes:"+ev.target.dataset.ev]=ev.target.value;if(ev.target.id==="pq"){ls.set("ecff-pq",ev.target.value);render()}});
+
+/* ============ boot ============ */
+if("serviceWorker" in navigator&&!window.claude){try{navigator.serviceWorker.register("sw.js").catch(()=>{})}catch(e){}}
+render();
+Store.init().then(render);
+</script>
+</body>
+</html>

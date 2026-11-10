@@ -1,0 +1,819 @@
+{
+ "version": 1,
+ "venues": [
+  {
+   "id": "ok",
+   "name": "OK Theatre",
+   "address": "208 W Main St, Enterprise, OR 97828",
+   "notes": "Screenings, concerts. Concessions: Darrell's crew.",
+   "color": "#c0392b",
+   "order": 0
+  },
+  {
+   "id": "ballroom",
+   "name": "The Ballroom",
+   "address": "104 1/2 SW 1st St, Enterprise, OR 97828",
+   "notes": "Screenings. Concessions handled by our team.",
+   "color": "#2c7be5",
+   "order": 1
+  },
+  {
+   "id": "fishtrap",
+   "name": "Fishtrap",
+   "address": "107 W Main St, Enterprise, OR 97828",
+   "notes": "Festival Office, box office, speaking events. Volunteer check-in.",
+   "color": "#8e44ad",
+   "order": 2
+  },
+  {
+   "id": "street",
+   "name": "Main Street / Red Carpet",
+   "address": "Main St in front of the OK Theatre",
+   "notes": "Red Carpet, food trucks, street music.",
+   "color": "#d4a017",
+   "order": 3
+  },
+  {
+   "id": "lounge",
+   "name": "Open Soul Wine Lounge",
+   "address": "Litch Hotel, Main St & River St, Enterprise (Unit: The Matterhorn)",
+   "notes": "21+. Bar volunteers.",
+   "color": "#16a085",
+   "order": 4
+  },
+  {
+   "id": "lodge",
+   "name": "Wallowa Lake Lodge",
+   "address": "60060 Wallowa Lake Hwy, Joseph, OR 97846",
+   "notes": "Festival Gala.",
+   "color": "#5d6d7e",
+   "order": 5
+  }
+ ],
+ "events": [
+  {
+   "day": "2026-11-02",
+   "start": "17:00",
+   "end": "18:00",
+   "title": "Eventive training (ticket scanners, box office)",
+   "venueId": "fishtrap",
+   "type": "training",
+   "notes": "",
+   "qa": false,
+   "id": "e001"
+  },
+  {
+   "day": "2026-11-04",
+   "start": "09:00",
+   "end": "11:30",
+   "title": "Projector training",
+   "venueId": "ballroom",
+   "type": "training",
+   "notes": "",
+   "qa": false,
+   "id": "e002"
+  },
+  {
+   "day": "2026-11-04",
+   "start": "13:00",
+   "end": "17:00",
+   "title": "Festival Office open \u2014 volunteer shirt pick-up",
+   "venueId": "fishtrap",
+   "type": "office",
+   "notes": "",
+   "qa": false,
+   "id": "e003"
+  },
+  {
+   "day": "2026-11-04",
+   "start": "13:00",
+   "end": "17:00",
+   "title": "Street setup",
+   "venueId": "street",
+   "type": "setup",
+   "notes": "",
+   "qa": false,
+   "id": "e004"
+  },
+  {
+   "day": "2026-11-05",
+   "start": "08:00",
+   "end": "17:00",
+   "title": "Festival Office open",
+   "venueId": "fishtrap",
+   "type": "office",
+   "notes": "Box office",
+   "qa": false,
+   "id": "e005"
+  },
+  {
+   "day": "2026-11-05",
+   "start": "13:00",
+   "end": "22:00",
+   "title": "Open Soul Wine Lounge",
+   "venueId": "lounge",
+   "type": "lounge",
+   "notes": "",
+   "qa": false,
+   "id": "e006"
+  },
+  {
+   "day": "2026-11-05",
+   "start": "13:30",
+   "end": "14:30",
+   "title": "Top of Everest",
+   "venueId": "fishtrap",
+   "type": "talk",
+   "notes": "Filmmaker experience",
+   "qa": false,
+   "id": "e007"
+  },
+  {
+   "day": "2026-11-05",
+   "start": "14:00",
+   "end": "16:30",
+   "title": "Old Henry",
+   "venueId": "ok",
+   "type": "screening",
+   "notes": "",
+   "qa": true,
+   "id": "e008"
+  },
+  {
+   "day": "2026-11-05",
+   "start": "14:30",
+   "end": "17:30",
+   "title": "The Last Dive",
+   "venueId": "ballroom",
+   "type": "screening",
+   "notes": "",
+   "qa": true,
+   "id": "e009"
+  },
+  {
+   "day": "2026-11-05",
+   "start": "17:00",
+   "end": "19:30",
+   "title": "Everest: The Other Side",
+   "venueId": "ok",
+   "type": "screening",
+   "notes": "Headliner \u2014 Erich Roepke presents",
+   "qa": true,
+   "id": "e010"
+  },
+  {
+   "day": "2026-11-05",
+   "start": "18:00",
+   "end": "20:00",
+   "title": "The Isolate Thief",
+   "venueId": "ballroom",
+   "type": "screening",
+   "notes": "",
+   "qa": false,
+   "id": "e011"
+  },
+  {
+   "day": "2026-11-05",
+   "start": "19:00",
+   "end": "21:00",
+   "title": "Red Carpet",
+   "venueId": "street",
+   "type": "redcarpet",
+   "notes": "Open to the public",
+   "qa": false,
+   "id": "e012"
+  },
+  {
+   "day": "2026-11-05",
+   "start": "20:00",
+   "end": "22:00",
+   "title": "Live music: Joseph",
+   "venueId": "ok",
+   "type": "music",
+   "notes": "Sold out",
+   "qa": false,
+   "id": "e013"
+  },
+  {
+   "day": "2026-11-06",
+   "start": "08:00",
+   "end": "17:00",
+   "title": "Festival Office open",
+   "venueId": "fishtrap",
+   "type": "office",
+   "notes": "Box office",
+   "qa": false,
+   "id": "e014"
+  },
+  {
+   "day": "2026-11-06",
+   "start": "10:00",
+   "end": "12:00",
+   "title": "Behind the Sounds of Your Favorite Films",
+   "venueId": "fishtrap",
+   "type": "talk",
+   "notes": "Filmmaker experience",
+   "qa": false,
+   "id": "e015"
+  },
+  {
+   "day": "2026-11-06",
+   "start": "11:00",
+   "end": "13:30",
+   "title": "Old Henry",
+   "venueId": "ok",
+   "type": "screening",
+   "notes": "",
+   "qa": true,
+   "id": "e016"
+  },
+  {
+   "day": "2026-11-06",
+   "start": "11:30",
+   "end": "14:00",
+   "title": "The Last Dive",
+   "venueId": "ballroom",
+   "type": "screening",
+   "notes": "",
+   "qa": true,
+   "id": "e017"
+  },
+  {
+   "day": "2026-11-06",
+   "start": "12:00",
+   "end": "14:00",
+   "title": "I Punched Tom Cruise",
+   "venueId": "fishtrap",
+   "type": "talk",
+   "notes": "Filmmaker experience",
+   "qa": false,
+   "id": "e018"
+  },
+  {
+   "day": "2026-11-06",
+   "start": "13:00",
+   "end": "22:00",
+   "title": "Open Soul Wine Lounge",
+   "venueId": "lounge",
+   "type": "lounge",
+   "notes": "",
+   "qa": false,
+   "id": "e019"
+  },
+  {
+   "day": "2026-11-06",
+   "start": "14:00",
+   "end": "16:30",
+   "title": "The Man Who Saves the World?",
+   "venueId": "ok",
+   "type": "screening",
+   "notes": "",
+   "qa": false,
+   "id": "e020"
+  },
+  {
+   "day": "2026-11-06",
+   "start": "14:30",
+   "end": "17:00",
+   "title": "Icarus",
+   "venueId": "ballroom",
+   "type": "screening",
+   "notes": "",
+   "qa": true,
+   "id": "e021"
+  },
+  {
+   "day": "2026-11-06",
+   "start": "17:00",
+   "end": "19:30",
+   "title": "Icarus: The Aftermath",
+   "venueId": "ok",
+   "type": "screening",
+   "notes": "Headliner",
+   "qa": true,
+   "id": "e022"
+  },
+  {
+   "day": "2026-11-06",
+   "start": "17:30",
+   "end": "20:00",
+   "title": "Butcher's Crossing",
+   "venueId": "ballroom",
+   "type": "screening",
+   "notes": "",
+   "qa": true,
+   "id": "e023"
+  },
+  {
+   "day": "2026-11-06",
+   "start": "18:30",
+   "end": "20:30",
+   "title": "Fishtrap Fireside",
+   "venueId": "fishtrap",
+   "type": "talk",
+   "notes": "Open to the public",
+   "qa": false,
+   "id": "e024"
+  },
+  {
+   "day": "2026-11-06",
+   "start": "19:00",
+   "end": "21:00",
+   "title": "Red Carpet",
+   "venueId": "street",
+   "type": "redcarpet",
+   "notes": "Open to the public",
+   "qa": false,
+   "id": "e025"
+  },
+  {
+   "day": "2026-11-06",
+   "start": "20:00",
+   "end": "22:30",
+   "title": "Last Breath",
+   "venueId": "ok",
+   "type": "screening",
+   "notes": "",
+   "qa": true,
+   "id": "e026"
+  },
+  {
+   "day": "2026-11-06",
+   "start": "20:30",
+   "end": "22:30",
+   "title": "Everest: The Other Side",
+   "venueId": "ballroom",
+   "type": "screening",
+   "notes": "",
+   "qa": false,
+   "id": "e027"
+  },
+  {
+   "day": "2026-11-07",
+   "start": "10:00",
+   "end": "14:00",
+   "title": "Festival Office open",
+   "venueId": "fishtrap",
+   "type": "office",
+   "notes": "Box office",
+   "qa": false,
+   "id": "e028"
+  },
+  {
+   "day": "2026-11-07",
+   "start": "12:00",
+   "end": "13:00",
+   "title": "Rivers In Time",
+   "venueId": "ballroom",
+   "type": "screening",
+   "notes": "",
+   "qa": true,
+   "id": "e029"
+  },
+  {
+   "day": "2026-11-07",
+   "start": "12:00",
+   "end": "14:00",
+   "title": "The Man Who Saves the World?",
+   "venueId": "ok",
+   "type": "screening",
+   "notes": "",
+   "qa": true,
+   "id": "e030"
+  },
+  {
+   "day": "2026-11-07",
+   "start": "13:00",
+   "end": "17:00",
+   "title": "Open Soul Wine Lounge",
+   "venueId": "lounge",
+   "type": "lounge",
+   "notes": "",
+   "qa": false,
+   "id": "e031"
+  },
+  {
+   "day": "2026-11-07",
+   "start": "14:00",
+   "end": "16:00",
+   "title": "Old Henry",
+   "venueId": "ballroom",
+   "type": "screening",
+   "notes": "",
+   "qa": true,
+   "id": "e032"
+  },
+  {
+   "day": "2026-11-07",
+   "start": "14:30",
+   "end": "16:30",
+   "title": "Last Breath",
+   "venueId": "ok",
+   "type": "screening",
+   "notes": "",
+   "qa": true,
+   "id": "e033"
+  },
+  {
+   "day": "2026-11-07",
+   "start": "15:30",
+   "end": "17:15",
+   "title": "Red Carpet",
+   "venueId": "street",
+   "type": "redcarpet",
+   "notes": "Open to the public",
+   "qa": false,
+   "id": "e034"
+  },
+  {
+   "day": "2026-11-07",
+   "start": "16:30",
+   "end": "19:00",
+   "title": "Icarus: The Aftermath",
+   "venueId": "ballroom",
+   "type": "screening",
+   "notes": "",
+   "qa": false,
+   "id": "e035"
+  },
+  {
+   "day": "2026-11-07",
+   "start": "17:00",
+   "end": "19:30",
+   "title": "The Last Dive",
+   "venueId": "ok",
+   "type": "screening",
+   "notes": "",
+   "qa": true,
+   "id": "e036"
+  },
+  {
+   "day": "2026-11-07",
+   "start": "17:15",
+   "end": "18:15",
+   "title": "Red Carpet moves to the Gala",
+   "venueId": "lodge",
+   "type": "setup",
+   "notes": "Setup / Teardown crew",
+   "qa": false,
+   "id": "e037"
+  },
+  {
+   "day": "2026-11-07",
+   "start": "19:30",
+   "end": "21:30",
+   "title": "Everest: The Other Side",
+   "venueId": "ballroom",
+   "type": "screening",
+   "notes": "",
+   "qa": false,
+   "id": "e038"
+  },
+  {
+   "day": "2026-11-07",
+   "start": "20:00",
+   "end": "22:00",
+   "title": "The Isolate Thief",
+   "venueId": "ok",
+   "type": "screening",
+   "notes": "",
+   "qa": false,
+   "id": "e039"
+  },
+  {
+   "day": "2026-11-07",
+   "start": "20:00",
+   "end": "21:00",
+   "title": "Street teardown",
+   "venueId": "street",
+   "type": "setup",
+   "notes": "",
+   "qa": false,
+   "id": "e040"
+  },
+  {
+   "day": "2026-11-07",
+   "start": "20:00",
+   "end": "23:00",
+   "title": "Festival Gala",
+   "venueId": "lodge",
+   "type": "gala",
+   "notes": "",
+   "qa": false,
+   "id": "e041"
+  }
+ ],
+ "roles": [
+  {
+   "id": "r01",
+   "name": "Theater Manager",
+   "arriveMin": 60,
+   "training": true,
+   "minAge": "",
+   "group": "Front of house",
+   "duties": "Run the venue. Confirm volunteers on time, projectionist has the right film + Q&A cued, meet the emcee, supervise wranglers/scanners, get rush count from box office for scanners, VIPs/moderator arrive early, cleanup arranged."
+  },
+  {
+   "id": "r02",
+   "name": "Ticket Scanner",
+   "arriveMin": 45,
+   "training": true,
+   "minAge": "",
+   "group": "Front of house",
+   "duties": "Eventive app synced, ECFF Starlink. Scan tickets/passes, crowd control, keep lobby quiet."
+  },
+  {
+   "id": "r03",
+   "name": "Usher",
+   "arriveMin": 30,
+   "training": false,
+   "minAge": "",
+   "group": "Front of house",
+   "duties": "Seat guests with flashlight, track open seats, keep aisles clear, lights between films."
+  },
+  {
+   "id": "r04",
+   "name": "Greeter",
+   "arriveMin": 30,
+   "training": false,
+   "minAge": "",
+   "group": "Front of house",
+   "duties": "Find lost guests, point to box office, line, merch, restrooms. Accessible seating."
+  },
+  {
+   "id": "r05",
+   "name": "Line Wrangler",
+   "arriveMin": 25,
+   "training": false,
+   "minAge": "",
+   "group": "Front of house",
+   "duties": "Sort ticketed vs rush lines, keep out of road, passholders to front of rush."
+  },
+  {
+   "id": "r06",
+   "name": "Projectionist",
+   "arriveMin": 45,
+   "training": true,
+   "minAge": "",
+   "group": "Technical",
+   "duties": "Load DCP, run show, watch levels. Start within 3 min of listed time."
+  },
+  {
+   "id": "r07",
+   "name": "Tech Crew",
+   "arriveMin": 45,
+   "training": true,
+   "minAge": "",
+   "group": "Technical",
+   "duties": "Second hands for projectionist; VIP laptops/materials; street audio."
+  },
+  {
+   "id": "r08",
+   "name": "Technical Setup",
+   "arriveMin": 180,
+   "training": true,
+   "minAge": "",
+   "group": "Technical",
+   "duties": "Load, haul, set up projection and sound. Test before doors."
+  },
+  {
+   "id": "r09",
+   "name": "Technical Director",
+   "arriveMin": 30,
+   "training": false,
+   "minAge": "",
+   "group": "Technical",
+   "duties": "All technical aspects of the festival."
+  },
+  {
+   "id": "r10",
+   "name": "Photographer",
+   "arriveMin": 15,
+   "training": false,
+   "minAge": "",
+   "group": "Technical",
+   "duties": "Photos/video for social, red carpet."
+  },
+  {
+   "id": "r11",
+   "name": "Airport Driver",
+   "arriveMin": 30,
+   "training": false,
+   "minAge": "25+",
+   "group": "Filmmaker services",
+   "duties": "Pick up/drop off filmmakers in own vehicle."
+  },
+  {
+   "id": "r12",
+   "name": "Filmmaker Liaison",
+   "arriveMin": 30,
+   "training": false,
+   "minAge": "",
+   "group": "Filmmaker services",
+   "duties": "VIP best friend: travel, rooms, passes, schedules, Q&A prep."
+  },
+  {
+   "id": "r13",
+   "name": "Q&A Moderator",
+   "arriveMin": 30,
+   "training": true,
+   "minAge": "",
+   "group": "Programming",
+   "duties": "Run the post-film conversation; end on time."
+  },
+  {
+   "id": "r14",
+   "name": "VIP",
+   "arriveMin": 30,
+   "training": false,
+   "minAge": "",
+   "group": "Programming",
+   "duties": "Filmmaker or speaker on stage."
+  },
+  {
+   "id": "r15",
+   "name": "Emcee",
+   "arriveMin": 30,
+   "training": false,
+   "minAge": "",
+   "group": "Programming",
+   "duties": "Introduce the film and festival."
+  },
+  {
+   "id": "r16",
+   "name": "Box Office",
+   "arriveMin": 45,
+   "training": true,
+   "minAge": "",
+   "group": "Front of house",
+   "duties": "Walk-up tickets, will-call, passes, merch, reconcile drawer. At Fishtrap."
+  },
+  {
+   "id": "r17",
+   "name": "Bar / Concessions / Merch",
+   "arriveMin": 45,
+   "training": false,
+   "minAge": "21+",
+   "group": "Front of house",
+   "duties": "Pour, sell snacks, iPad sales, no drinking on shift."
+  },
+  {
+   "id": "r18",
+   "name": "Merch",
+   "arriveMin": 15,
+   "training": false,
+   "minAge": "",
+   "group": "Front of house",
+   "duties": "Eagle Caps and tees, iPad sales."
+  },
+  {
+   "id": "r19",
+   "name": "Theater Cleanup",
+   "arriveMin": 0,
+   "training": false,
+   "minAge": "",
+   "group": "Logistics",
+   "duties": "Sweep between shows, recover lost items."
+  },
+  {
+   "id": "r20",
+   "name": "Street Team",
+   "arriveMin": 15,
+   "training": false,
+   "minAge": "",
+   "group": "Logistics",
+   "duties": "Barriers, hand stamps, red carpet set/strike."
+  },
+  {
+   "id": "r21",
+   "name": "Wild Card",
+   "arriveMin": 0,
+   "training": false,
+   "minAge": "",
+   "group": "Logistics",
+   "duties": "Fill the gap."
+  },
+  {
+   "id": "r22",
+   "name": "Setup / Teardown",
+   "arriveMin": 0,
+   "training": false,
+   "minAge": "",
+   "group": "Logistics",
+   "duties": "Street party, red carpet to Gala, lights, barricades."
+  }
+ ],
+ "volunteers": [],
+ "shifts": [],
+ "meta": {
+  "festival": {
+   "name": "Eagle Cap Film Festival",
+   "year": 2026,
+   "days": [
+    "2026-11-05",
+    "2026-11-06",
+    "2026-11-07"
+   ],
+   "startDay": "2026-11-05",
+   "timezone": "America/Los_Angeles",
+   "contacts": [
+    {
+     "name": "Jennifer Piper",
+     "role": "Volunteer Coordinator",
+     "phone": "(541) 406-0703",
+     "email": "jenniferleepiper@gmail.com"
+    },
+    {
+     "name": "Cody Sheehy",
+     "role": "Box office",
+     "phone": "",
+     "email": ""
+    }
+   ]
+  },
+  "runsheet": {
+   "items": [
+    {
+     "key": "k00",
+     "offset": -60,
+     "text": "Theater manager on site; confirm Eagle Cap box office login (Cody Sheehy)"
+    },
+    {
+     "key": "k01",
+     "offset": -50,
+     "text": "Check volunteer roster for this show against the coordinator; chase no-shows on WhatsApp"
+    },
+    {
+     "key": "k02",
+     "offset": -45,
+     "text": "Projectionist on site \u2014 confirm the correct DCP is loaded and levels checked"
+    },
+    {
+     "key": "k03",
+     "offset": -45,
+     "text": "Ticket scanners on site \u2014 Eventive synced, on ECFF Starlink, phones charged"
+    },
+    {
+     "key": "k04",
+     "offset": -40,
+     "text": "Q&A materials cued; VIP laptop/materials handed to tech crew"
+    },
+    {
+     "key": "k05",
+     "offset": -35,
+     "text": "Meet the emcee \u2014 agree when they introduce the film"
+    },
+    {
+     "key": "k06",
+     "offset": -30,
+     "text": "Line forms \u2014 wranglers splitting ticketed vs rush; line out of the road"
+    },
+    {
+     "key": "k07",
+     "offset": -30,
+     "text": "Ushers and greeters in position; accessible seating ready"
+    },
+    {
+     "key": "k08",
+     "offset": -25,
+     "text": "Concessions ready (OK: Darrell's crew / Ballroom: our team)"
+    },
+    {
+     "key": "k09",
+     "offset": -20,
+     "text": "Ticketed line scanning begins \u2014 get them in ASAP"
+    },
+    {
+     "key": "k10",
+     "offset": -15,
+     "text": "Filmmaker liaison: VIPs and moderator here and introduced"
+    },
+    {
+     "key": "k11",
+     "offset": -10,
+     "text": "Get unfilled-seat count from box office \u2192 give number to scanners; release rush line (passholders first)"
+    },
+    {
+     "key": "k12",
+     "offset": 0,
+     "text": "House to half; emcee intro; film rolls (within 3 min of listed time)"
+    },
+    {
+     "key": "k13",
+     "offset": 5,
+     "text": "Close doors; lobby quiet; record final attendance"
+    },
+    {
+     "key": "k14",
+     "offset": null,
+     "text": "Q&A: moderator + VIP on stage, end on time"
+    },
+    {
+     "key": "k15",
+     "offset": null,
+     "text": "Cleanup crew scheduled? If not, assign a volunteer to sweep; recover lost items"
+    }
+   ]
+  }
+ }
+}
